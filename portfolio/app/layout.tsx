@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/navigation/navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import { defaultMetadata } from "@/config/metadata";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -16,10 +17,7 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
-export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Personal portfolio website",
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,
@@ -39,7 +37,7 @@ export default function RootLayout({
         >
           <div className="relative flex min-h-screen flex-col">
             <Navbar />
-            <div className="flex-1">{children}</div>
+            <main className="flex-1 pt-14">{children}</main>
             <ScrollToTop />
           </div>
         </ThemeProvider>

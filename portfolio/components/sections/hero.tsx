@@ -3,8 +3,9 @@
 import { motion } from "framer-motion"
 import { ArrowRight, Github, Linkedin, Mail } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
+import { OptimizedImage } from "@/components/ui/optimized-image"
 import { personalInfo } from "@/data/portfolio-data"
+import { container, section } from "@/lib/utils"
 
 const socialLinks = [
   {
@@ -26,53 +27,61 @@ const socialLinks = [
 
 export function HeroSection() {
   return (
-    <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
-      <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+    <section className={section}>
+      <div className={`${container} flex flex-col items-center text-center`}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center gap-4"
+          className="flex flex-col items-center space-y-8"
         >
-          <Image
-            src="/avatar.jpg"
-            alt="Profile picture"
-            width={150}
-            height={150}
-            className="rounded-full border-4 border-foreground/10"
-            priority
-          />
-          <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
-            Hi, I'm <span className="text-primary">{personalInfo.name}</span>
-          </h1>
-          <p className="text-2xl font-semibold text-muted-foreground">
-            {personalInfo.role}
-          </p>
-          <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
-            {personalInfo.summary}
-          </p>
-          <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-lg">
-            {personalInfo.longSummary}
-          </p>
+          <div className="relative h-32 w-32 sm:h-40 sm:w-40 lg:h-48 lg:w-48">
+            <OptimizedImage
+              src="/avatar.jpg"
+              alt="Profile picture"
+              width={192}
+              height={192}
+              className="rounded-full border-4 border-foreground/10 shadow-lg"
+              priority
+            />
+          </div>
+
+          <div className="space-y-4">
+            <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
+              Hi, I'm <span className="text-primary">{personalInfo.name}</span>
+            </h1>
+            <p className="text-xl sm:text-2xl font-medium text-muted-foreground">
+              {personalInfo.role}
+            </p>
+          </div>
+
+          <div className="max-w-[65ch] space-y-4">
+            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+              {personalInfo.summary}
+            </p>
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              {personalInfo.longSummary}
+            </p>
+          </div>
         </motion.div>
         
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex gap-4"
+          className="mt-12 flex flex-col sm:flex-row gap-4"
         >
           <Link
             href="/projects"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             View Projects
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
           
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-3 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex items-center justify-center rounded-lg border border-input bg-background px-8 py-3 text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             Contact Me
           </Link>
@@ -82,7 +91,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex gap-4"
+          className="mt-12 flex gap-6"
         >
           {socialLinks.map((link) => {
             const Icon = link.icon
@@ -90,11 +99,11 @@ export function HeroSection() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="rounded-full p-2 transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="rounded-full p-3 transition-colors hover:bg-accent hover:text-accent-foreground"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="h-6 w-6 sm:h-7 sm:w-7" />
                 <span className="sr-only">{link.name}</span>
               </Link>
             )
