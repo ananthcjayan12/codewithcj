@@ -1,0 +1,162 @@
+Modern Portfolio Website Development Guide
+========================================
+
+Tech Stack:
+-----------
+- Next.js 14 (App Router)
+- shadcn/ui
+
+
+
+Project Structure:
+-----------------
+.
+├── .gitattributes
+├── instructions.txt
+└── portfolio
+    ├── .eslintrc.json
+    ├── .gitignore
+    ├── README.md
+    ├── app
+    │   ├── favicon.ico
+    │   ├── fonts
+    │   │   ├── GeistMonoVF.woff
+    │   │   └── GeistVF.woff
+    │   ├── globals.css
+    │   ├── layout.tsx
+    │   └── page.tsx
+    ├── components.json
+    ├── lib
+    │   └── utils.ts
+    ├── next-env.d.ts
+    ├── next.config.mjs
+    ├── package-lock.json
+    ├── package.json
+    ├── postcss.config.mjs
+    ├── tailwind.config.t
+
+Key Features to Implement:
+-------------------------
+1. Hero Section
+   - Professional headshot/avatar
+   - Animated text introduction
+   - Call-to-action buttons
+   - Social media links
+
+2. About Section
+   - Professional summary
+   - Skills/Tech stack
+   - Experience timeline
+   - Education
+   - Downloadable resume
+
+3. Projects Section
+   - Project cards with:
+     * Project thumbnail
+     * Title and description
+     * Tech stack used
+     * Live demo & GitHub links
+   - Filter by technology/category
+
+4. Contact Section
+   - Contact form
+   - Social media links
+   - Email address
+   - Location (optional)
+
+UI/UX Principles to Follow:
+--------------------------
+1. Typography
+   - Use clear hierarchy (H1, H2, H3)
+   - Choose modern, readable fonts
+   - Maintain consistent spacing
+
+2. Colors
+   - Choose 2-3 primary colors
+   - Use dark/light mode
+   - Ensure proper contrast
+   - Follow 60-30-10 color rule
+
+3. Layout
+   - Use whitespace effectively
+   - Maintain visual hierarchy
+   - Keep navigation simple
+   - Ensure mobile responsiveness
+
+4. Animations
+   - Subtle entrance animations
+   - Smooth scroll effects
+   - Hover interactions
+   - Loading states
+
+5. Performance
+   - Optimize images
+   - Implement lazy loading
+   - Minimize bundle size
+   - Use Next.js Image component
+
+Accessibility Guidelines:
+------------------------
+1. Use semantic HTML
+2. Include proper ARIA labels
+3. Ensure keyboard navigation
+4. Maintain sufficient color contrast
+5. Add alt text to images
+
+SEO Optimization:
+----------------
+1. Implement metadata
+2. Create sitemap
+3. Add Open Graph tags
+4. Use semantic HTML
+5. Optimize for mobile
+
+Development Steps:
+-----------------
+1. Set up project structure
+2. Implement layout and navigation
+3. Create reusable components
+4. Build main sections
+5. Add animations
+6. Implement dark mode
+7. Optimize for performance
+8. Test across devices
+9. Deploy to Vercel
+
+Testing Checklist:
+-----------------
+1. Cross-browser compatibility
+2. Mobile responsiveness
+3. Performance metrics
+4. Accessibility
+5. Form validation
+6. Link checking
+7. Content proofreading
+
+Deployment:
+-----------
+1. Create Vercel account
+2. Connect GitHub repository
+3. Configure build settings
+4. Deploy application
+5. Set up custom domain (optional)
+
+Additional Tips:
+---------------
+1. Keep design minimal and clean
+2. Focus on content hierarchy
+3. Use high-quality images
+4. Include loading states
+5. Add scroll-to-top button
+6. Implement contact form validation
+7. Add success/error messages
+8. Include progress indicators
+
+Remember:
+---------
+- Keep content updated
+- Monitor analytics
+- Gather user feedback
+- Regularly update dependencies
+- Back up your code
+- Document your code
