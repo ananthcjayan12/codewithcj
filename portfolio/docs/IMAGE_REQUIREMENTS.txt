@@ -1,0 +1,86 @@
+Image Requirements for Portfolio
+==============================
+
+1. Profile/Avatar Image
+Location: /public/profile.jpg
+Size: 400x400px
+Format: JPG/PNG
+Prompt: "Professional headshot of a male software engineer in his late twenties, wearing a smart casual outfit, with a friendly and approachable expression, dark background, high-quality studio lighting, 4K, professional photography"
+
+2. Project Images (1200x675px, 16:9 ratio)
+---------------
+
+a) Excel Automation Suite
+Location: /public/projects/excel-automation.jpg
+Prompt: "3D visualization of Excel spreadsheets transforming into automated workflows, Python code elements floating around, modern minimalist design, dark theme, professional data visualization"
+
+b) Web Scraping Framework
+Location: /public/projects/web-scraping.jpg
+Prompt: "Abstract visualization of web data extraction, connected nodes and data streams, modern UI elements, featuring Selenium and BeautifulSoup logos, dark technology theme"
+
+c) Social Media Automation
+Location: /public/projects/social-media.jpg
+Prompt: "AI-powered social media dashboard with multiple platform integrations, showing content generation and scheduling, modern dark UI with glowing elements"
+
+d) Enterprise ERP System
+Location: /public/projects/erp-system.jpg
+Prompt: "Modern ERP dashboard showing manufacturing and business analytics, dark theme with data visualizations, workflow diagrams, and real-time metrics"
+
+e) Trading Bot System
+Location: /public/projects/trading-bot.jpg
+Prompt: "Financial trading dashboard with NIFTY/BankNIFTY charts, automated trading indicators, dark theme with neon accents"
+
+f) WhatsApp & Telegram Automation
+Location: /public/projects/messaging-automation.jpg
+Prompt: "Modern messaging interface showing automated responses and business notifications, WhatsApp and Telegram integration, dark theme with messaging bubbles"
+
+g) QR Code Platform
+Location: /public/projects/qr-platform.jpg
+Prompt: "Dynamic QR code generation platform interface, showing customizable QR codes and analytics dashboard, dark modern UI"
+
+h) Resume Optimization Tool
+Location: /public/projects/resume-tool.jpg
+Prompt: "AI-powered resume analysis interface, showing keyword matching and optimization suggestions, professional dark theme UI"
+
+i) Voice & Video Automation
+Location: /public/projects/content-automation.jpg
+Prompt: "Content creation dashboard showing voice cloning and video automation tools, modern dark UI with waveforms and video timelines"
+
+j) Nifty Options Trading
+Location: /public/projects/nifty-trading.jpg
+Prompt: "Advanced trading interface for options trading, showing straddles and strangles strategies, real-time market data, dark theme with financial charts"
+
+3. Open Graph Image
+Location: /public/og.jpg
+Size: 1200x630px
+Format: JPG
+Prompt: "Professional dark theme banner featuring Python code, automation workflows, and AI elements, with text 'Backend Engineer & Automation Specialist'"
+
+4. Favicon/Icons
+---------------
+Location: /public/favicon.ico
+Location: /public/favicon-16x16.png
+Location: /public/favicon-32x32.png
+Location: /public/apple-touch-icon.png
+Location: /public/android-chrome-192x192.png
+Location: /public/android-chrome-512x512.png
+Prompt: "Minimalist icon combining 'ACJ' initials with automation/code elements, suitable for dark and light themes"
+
+Image Guidelines:
+---------------
+1. Consistent dark theme across all images
+2. Professional and modern tech aesthetic
+3. High resolution and optimized for web
+4. Clear and readable when scaled
+5. Consistent color palette:
+   - Primary: #0070F3 (Blue)
+   - Secondary: #171717 (Dark)
+   - Accent: #6366F1 (Indigo)
+
+Generation Process:
+-----------------
+1. Use Midjourney/DALL-E for initial generation
+2. Post-process in Photoshop/GIMP if needed
+3. Optimize using next-gen formats (WebP)
+4. Create responsive variants
+5. Test in both light and dark modes

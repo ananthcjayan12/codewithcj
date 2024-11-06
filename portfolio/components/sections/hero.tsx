@@ -10,17 +10,17 @@ import { container, section } from "@/lib/utils"
 const socialLinks = [
   {
     name: "GitHub",
-    href: "https://github.com/yourusername",
+    href: "https://github.com/ananthuuu",
     icon: Github,
   },
   {
     name: "LinkedIn",
-    href: "https://linkedin.com/in/yourusername",
+    href: "https://linkedin.com/in/ananthcjayan",
     icon: Linkedin,
   },
   {
     name: "Email",
-    href: "mailto:your@email.com",
+    href: "mailto:ananthcjayan@gmail.com",
     icon: Mail,
   },
 ]
@@ -33,28 +33,31 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col items-center space-y-8"
+          className="flex flex-col items-center gap-8"
         >
-          <div className="relative h-32 w-32 sm:h-40 sm:w-40 lg:h-48 lg:w-48">
+          {/* Profile Image */}
+          <div className="relative h-40 w-40 sm:h-48 sm:w-48">
             <OptimizedImage
-              src="/avatar.jpg"
-              alt="Profile picture"
+              src="/profile.jpg" // Make sure to add your profile picture in the public folder
+              alt="Ananth C Jayan"
               width={192}
               height={192}
-              className="rounded-full border-4 border-foreground/10 shadow-lg"
+              className="rounded-full border-4 border-primary/10 shadow-xl"
               priority
             />
           </div>
 
+          {/* Name and Role */}
           <div className="space-y-4">
-            <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
-              Hi, I'm <span className="text-primary">{personalInfo.name}</span>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              {personalInfo.name}
             </h1>
-            <p className="text-xl sm:text-2xl font-medium text-muted-foreground">
+            <p className="text-xl text-muted-foreground sm:text-2xl font-medium">
               {personalInfo.role}
             </p>
           </div>
 
+          {/* Summary */}
           <div className="max-w-[65ch] space-y-4">
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
               {personalInfo.summary}
@@ -64,7 +67,8 @@ export function HeroSection() {
             </p>
           </div>
         </motion.div>
-        
+
+        {/* Call to Action Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -73,20 +77,20 @@ export function HeroSection() {
         >
           <Link
             href="/projects"
-            className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3 text-lg font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             View Projects
             <ArrowRight className="ml-2 h-5 w-5" />
           </Link>
-          
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center rounded-lg border border-input bg-background px-8 py-3 text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex items-center justify-center rounded-lg border bg-background px-8 py-3 text-lg font-medium transition-colors hover:bg-accent"
           >
-            Contact Me
+            Get in Touch
           </Link>
         </motion.div>
 
+        {/* Social Links */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

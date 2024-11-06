@@ -3,15 +3,15 @@ import { Metadata } from "next"
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
 export const siteConfig = {
-  name: "Your Name",
-  title: "Portfolio - Full Stack Developer & Automation Specialist",
-  description: "Full-stack developer specializing in automation, AI integration, and modern web technologies.",
+  name: "Ananth C Jayan",
+  title: "Portfolio - Backend Engineer & Automation Specialist",
+  description: "Backend engineer with 4+ years of experience, specializing in automation, AI integration, and custom project development.",
   url: baseUrl,
   ogImage: `${baseUrl}/og.jpg`,
   links: {
-    github: "https://github.com/yourusername",
-    linkedin: "https://linkedin.com/in/yourusername",
-    email: "mailto:your@email.com",
+    github: "https://github.com/ananthuuu",
+    linkedin: "https://linkedin.com/in/ananthcjayan",
+    email: "mailto:ananthcjayan@gmail.com",
   },
 }
 
@@ -44,7 +44,7 @@ export const defaultMetadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
-    creator: "@yourusername",
+    creator: "@ananthcjayan",
   },
   robots: {
     index: true,
