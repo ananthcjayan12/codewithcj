@@ -1,5 +1,8 @@
 import { ProjectsSection } from "@/components/sections/projects/projects"
 import { Metadata } from "next"
+import { pageWrapper } from "@/lib/utils"
+
+export const runtime = "edge"
 
 export const metadata: Metadata = {
   title: "Projects | Portfolio",
@@ -8,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main className="container py-6 md:py-12">
+    <main className={pageWrapper}>
       <ProjectsSection />
     </main>
   )

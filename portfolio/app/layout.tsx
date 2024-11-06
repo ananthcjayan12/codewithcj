@@ -4,21 +4,26 @@ import "./globals.css";
 import { Navbar } from "@/components/navigation/navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
+import { defaultMetadata } from "@/config/metadata";
+
+export const runtime = "edge";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
+  display: "swap",
 });
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Personal portfolio website",
+  ...defaultMetadata,
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -28,6 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
       >
@@ -39,7 +47,7 @@ export default function RootLayout({
         >
           <div className="relative flex min-h-screen flex-col">
             <Navbar />
-            <div className="flex-1">{children}</div>
+            <main className="flex-1 pt-14">{children}</main>
             <ScrollToTop />
           </div>
         </ThemeProvider>

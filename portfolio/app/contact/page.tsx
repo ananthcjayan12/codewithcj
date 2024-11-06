@@ -1,5 +1,8 @@
 import { ContactSection } from "@/components/sections/contact/contact"
 import { Metadata } from "next"
+import { pageWrapper } from "@/lib/utils"
+
+export const runtime = "edge"
 
 export const metadata: Metadata = {
   title: "Contact | Portfolio",
@@ -8,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="container py-6 md:py-12">
+    <main className={pageWrapper}>
       <ContactSection />
     </main>
   )

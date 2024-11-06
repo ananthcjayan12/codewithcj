@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Image from "next/image"
+import { OptimizedImage } from "@/components/ui/optimized-image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
@@ -23,30 +23,30 @@ export function ProjectCard({
   return (
     <motion.div
       whileHover={{ y: -5 }}
-      className="group relative overflow-hidden rounded-lg border bg-background p-2"
+      className="group relative overflow-hidden rounded-lg border bg-background p-2 transition-colors hover:bg-accent/50"
     >
       <Link href={`/projects/${slug}`} className="block">
         <div className="aspect-video overflow-hidden rounded-md">
-          <Image
+          <OptimizedImage
             src={image}
             alt={title}
             width={600}
             height={400}
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
         <div className="p-4">
-          <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
+          <h3 className="line-clamp-1 text-xl font-semibold group-hover:text-primary transition-colors">
             {title}
           </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
             {description}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-secondary px-2 py-1 text-xs font-medium"
+                className="inline-flex items-center rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium transition-colors group-hover:bg-secondary/80"
               >
                 {tag}
               </span>
