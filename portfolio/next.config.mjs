@@ -19,7 +19,6 @@ const nextConfig = {
   },
   experimental: {
     optimizeCss: false,
-    optimizeImages: true,
   },
   async headers() {
     return [
