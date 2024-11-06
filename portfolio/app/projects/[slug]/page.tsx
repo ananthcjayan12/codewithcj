@@ -1,12 +1,27 @@
 import { notFound } from "next/navigation"
-import Image from "next/image"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Code2, Database, Bot, LineChart, MessageSquare, QrCode, FileText, Video, BarChart, Cog, Brain, Building2, Workflow } from "lucide-react"
 import { Metadata } from "next"
 import Link from "next/link"
 import { projects } from "@/data/portfolio-data"
 import { container, pageWrapper } from "@/lib/utils"
 
 export const runtime = "edge"
+
+const iconMap = {
+  code: Code2,
+  database: Database,
+  bot: Bot,
+  chart: LineChart,
+  message: MessageSquare,
+  qr: QrCode,
+  file: FileText,
+  video: Video,
+  bar: BarChart,
+  automation: Cog,
+  ai: Brain,
+  erp: Building2,
+  workflow: Workflow,
+}
 
 interface Props {
   params: {
@@ -36,6 +51,8 @@ export default function ProjectPage({ params }: Props) {
     notFound()
   }
 
+  const IconComponent = iconMap[project.icon] || Code2
+
   return (
     <main className={pageWrapper}>
       <div className={container}>
@@ -50,32 +67,27 @@ export default function ProjectPage({ params }: Props) {
             </Link>
           </div>
 
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold tracking-tight">{project.title}</h1>
-            <div className="flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-secondary px-3 py-1 text-sm font-medium"
-                >
-                  {tag}
-                </span>
-              ))}
+          <div className="space-y-6">
+            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10">
+              <IconComponent className="h-8 w-8 text-primary" />
             </div>
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              {project.description}
-            </p>
-          </div>
-
-          <div className="aspect-video overflow-hidden rounded-lg border bg-muted">
-            <Image
-              src={project.image}
-              alt={project.title}
-              width={1200}
-              height={675}
-              className="object-cover"
-              priority
-            />
+            
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold tracking-tight">{project.title}</h1>
+              <div className="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-secondary px-3 py-1 text-sm font-medium"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <p className="text-xl text-muted-foreground leading-relaxed">
+                {project.description}
+              </p>
+            </div>
           </div>
 
           <div className="prose dark:prose-invert max-w-none">

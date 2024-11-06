@@ -4,83 +4,96 @@ Image Requirements for Portfolio
 1. Profile/Avatar Image
 Location: /public/profile.jpg
 Size: 400x400px
-Format: JPG/PNG
-Prompt: "Professional headshot of a male software engineer in his late twenties, wearing a smart casual outfit, with a friendly and approachable expression, dark background, high-quality studio lighting, 4K, professional photography"
+Format: PNG (with transparency)
+Prompt: "Flat design illustration of a developer icon, clean vector style, simple geometric shapes, monochromatic black gradient elements, subtle gray accents, white details, no background, modern minimal tech illustration style"
 
 2. Project Images (1200x675px, 16:9 ratio)
 ---------------
 
 a) Excel Automation Suite
 Location: /public/projects/excel-automation.jpg
-Prompt: "3D visualization of Excel spreadsheets transforming into automated workflows, Python code elements floating around, modern minimalist design, dark theme, professional data visualization"
+Prompt: "Flat design illustration of Excel automation, vector style like Dropbox illustrations, floating spreadsheet elements, gear icons, black gradient shapes, subtle gray accents, white UI elements, no background, modern minimal tech style"
 
 b) Web Scraping Framework
 Location: /public/projects/web-scraping.jpg
-Prompt: "Abstract visualization of web data extraction, connected nodes and data streams, modern UI elements, featuring Selenium and BeautifulSoup logos, dark technology theme"
+Prompt: "Flat design illustration of web scraping concept, vector style like Slack illustrations, connected data elements, floating website components, black gradient shapes, subtle gray accents, white details, no background"
 
 c) Social Media Automation
 Location: /public/projects/social-media.jpg
-Prompt: "AI-powered social media dashboard with multiple platform integrations, showing content generation and scheduling, modern dark UI with glowing elements"
+Prompt: "Flat design illustration of social media automation, relaxed character managing multiple platforms, vector style like the example, black gradient elements, subtle gray accents, white UI components, no background"
 
 d) Enterprise ERP System
 Location: /public/projects/erp-system.jpg
-Prompt: "Modern ERP dashboard showing manufacturing and business analytics, dark theme with data visualizations, workflow diagrams, and real-time metrics"
+Prompt: "Flat design illustration of ERP system, vector style like Monday.com illustrations, connected business modules, floating UI elements, black gradient shapes, subtle gray accents, white details, no background"
 
 e) Trading Bot System
 Location: /public/projects/trading-bot.jpg
-Prompt: "Financial trading dashboard with NIFTY/BankNIFTY charts, automated trading indicators, dark theme with neon accents"
+Prompt: "Flat design illustration of trading bot, vector style like Stripe illustrations, floating chart elements, automation indicators, black gradient shapes, subtle gray accents, white UI elements, no background"
 
 f) WhatsApp & Telegram Automation
 Location: /public/projects/messaging-automation.jpg
-Prompt: "Modern messaging interface showing automated responses and business notifications, WhatsApp and Telegram integration, dark theme with messaging bubbles"
+Prompt: "Flat design illustration of messaging automation, relaxed character with floating message bubbles, vector style like the example, black gradient elements, subtle gray accents, white UI components, no background"
 
 g) QR Code Platform
 Location: /public/projects/qr-platform.jpg
-Prompt: "Dynamic QR code generation platform interface, showing customizable QR codes and analytics dashboard, dark modern UI"
+Prompt: "Flat design illustration of QR code management, vector style like Asana illustrations, floating QR codes, analytics elements, black gradient shapes, subtle gray accents, white details, no background"
 
 h) Resume Optimization Tool
 Location: /public/projects/resume-tool.jpg
-Prompt: "AI-powered resume analysis interface, showing keyword matching and optimization suggestions, professional dark theme UI"
+Prompt: "Flat design illustration of resume analysis, vector style like Notion illustrations, floating document elements, keyword highlights, black gradient shapes, subtle gray accents, white UI elements, no background"
 
 i) Voice & Video Automation
 Location: /public/projects/content-automation.jpg
-Prompt: "Content creation dashboard showing voice cloning and video automation tools, modern dark UI with waveforms and video timelines"
+Prompt: "Flat design illustration of content automation, vector style like Figma illustrations, floating media elements, waveforms, black gradient shapes, subtle gray accents, white details, no background"
 
 j) Nifty Options Trading
 Location: /public/projects/nifty-trading.jpg
-Prompt: "Advanced trading interface for options trading, showing straddles and strangles strategies, real-time market data, dark theme with financial charts"
+Prompt: "Flat design illustration of options trading, vector style like Robinhood illustrations, floating chart elements, strategy visualization, black gradient shapes, subtle gray accents, white UI components, no background"
 
-3. Open Graph Image
-Location: /public/og.jpg
-Size: 1200x630px
-Format: JPG
-Prompt: "Professional dark theme banner featuring Python code, automation workflows, and AI elements, with text 'Backend Engineer & Automation Specialist'"
-
-4. Favicon/Icons
+Design Guidelines:
 ---------------
-Location: /public/favicon.ico
-Location: /public/favicon-16x16.png
-Location: /public/favicon-32x32.png
-Location: /public/apple-touch-icon.png
-Location: /public/android-chrome-192x192.png
-Location: /public/android-chrome-512x512.png
-Prompt: "Minimalist icon combining 'ACJ' initials with automation/code elements, suitable for dark and light themes"
+1. Illustration Style:
+   - Flat design vector illustrations
+   - Clean, modern tech aesthetic
+   - Similar to example image style
+   - Relaxed, friendly character illustrations where applicable
 
-Image Guidelines:
----------------
-1. Consistent dark theme across all images
-2. Professional and modern tech aesthetic
-3. High resolution and optimized for web
-4. Clear and readable when scaled
-5. Consistent color palette:
-   - Primary: #0070F3 (Blue)
-   - Secondary: #171717 (Dark)
-   - Accent: #6366F1 (Indigo)
+2. Color Palette:
+   - Primary: Rich Black (#000000)
+   - Secondary: Dark Gray (#1A1A1A)
+   - Accent: Light Gray (#808080)
+   - Details: Clean White (#FFFFFF)
+   - No backgrounds (transparent)
+
+3. Visual Elements:
+   - Simple geometric shapes
+   - Floating UI elements
+   - Minimal details
+   - Soft rounded corners
+   - Light and playful style
+   - Monochromatic scheme
+
+4. Technical Specifications:
+   - Vector-based illustrations
+   - High-resolution export
+   - Transparent backgrounds
+   - Consistent style across all images
+   - Optimized for web
 
 Generation Process:
 -----------------
-1. Use Midjourney/DALL-E for initial generation
-2. Post-process in Photoshop/GIMP if needed
-3. Optimize using next-gen formats (WebP)
-4. Create responsive variants
-5. Test in both light and dark modes
+1. Use Midjourney or DALL-E with:
+   - Vector style specification
+   - Flat design requirement
+   - Transparent background
+   - Monochromatic black theme
+2. Post-process in Illustrator/Figma:
+   - Clean up vectors
+   - Ensure consistency
+   - Add subtle gradients
+   - Maintain black and white aesthetic
+3. Export formats:
+   - PNG with transparency
+   - SVG where possible
+   - Optimized WebP for web
+4. Verify style matches example image with black theme

@@ -1,41 +1,70 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { OptimizedImage } from "@/components/ui/optimized-image"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { 
+  ArrowRight, 
+  Code2, 
+  Database, 
+  Bot, 
+  LineChart, 
+  MessageSquare, 
+  QrCode, 
+  FileText, 
+  Video, 
+  BarChart,
+  Cog,
+  Brain,
+  Building2,
+  Workflow,
+  type LucideIcon
+} from "lucide-react"
 
 interface ProjectCardProps {
   title: string
   description: string
-  image: string
-  tags: string[]
+  tags: readonly string[]
   slug: string
+  icon: keyof typeof iconMap
+}
+
+const iconMap: Record<string, LucideIcon> = {
+  code: Code2,
+  database: Database,
+  bot: Bot,
+  chart: LineChart,
+  message: MessageSquare,
+  qr: QrCode,
+  file: FileText,
+  video: Video,
+  bar: BarChart,
+  automation: Cog,
+  ai: Brain,
+  erp: Building2,
+  workflow: Workflow,
 }
 
 export function ProjectCard({
   title,
   description,
-  image,
   tags,
   slug,
+  icon,
 }: ProjectCardProps) {
+  const IconComponent = iconMap[icon] || Code2
+
   return (
     <motion.div
       whileHover={{ y: -5 }}
-      className="group relative overflow-hidden rounded-lg border bg-background p-2 transition-colors hover:bg-accent/50"
+      className="group relative overflow-hidden rounded-lg border bg-background p-6 transition-colors hover:bg-accent/50"
     >
       <Link href={`/projects/${slug}`} className="block">
-        <div className="aspect-video overflow-hidden rounded-md">
-          <OptimizedImage
-            src={image}
-            alt={title}
-            width={600}
-            height={400}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+        <div className="mb-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+            <IconComponent className="h-6 w-6 text-primary" />
+          </div>
         </div>
-        <div className="p-4">
+        <div>
           <h3 className="line-clamp-1 text-xl font-semibold group-hover:text-primary transition-colors">
             {title}
           </h3>

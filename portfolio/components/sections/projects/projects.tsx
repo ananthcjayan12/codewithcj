@@ -5,8 +5,15 @@ import { motion } from "framer-motion"
 import { ProjectCard } from "@/components/ui/project-card"
 import { projects } from "@/data/portfolio-data"
 import { container, section, sectionHeading, sectionSubHeading } from "@/lib/utils"
+import { Cog, Brain, Building2, LineChart, Code2 } from "lucide-react"
 
-const categories = ["All", "Automation", "AI", "Business", "Finance"]
+const categories = [
+  { name: "All", icon: Code2 },
+  { name: "Automation", icon: Cog },
+  { name: "AI", icon: Brain },
+  { name: "Business", icon: Building2 },
+  { name: "Finance", icon: LineChart },
+] as const
 
 export function ProjectsSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
@@ -37,19 +44,23 @@ export function ProjectsSection() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="flex flex-wrap gap-3 mb-12"
         >
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`rounded-full px-6 py-2.5 text-sm font-medium transition-colors ${
-                selectedCategory === category
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+          {categories.map((category) => {
+            const Icon = category.icon
+            return (
+              <button
+                key={category.name}
+                onClick={() => setSelectedCategory(category.name)}
+                className={`inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium transition-colors ${
+                  selectedCategory === category.name
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {category.name}
+              </button>
+            )
+          })}
         </motion.div>
 
         <motion.div
@@ -63,9 +74,9 @@ export function ProjectsSection() {
               key={project.slug}
               title={project.title}
               description={project.description}
-              image={project.image}
               tags={project.tags}
               slug={project.slug}
+              icon={project.icon}
             />
           ))}
         </motion.div>
