@@ -2,6 +2,8 @@ import { ContactSection } from "@/components/sections/contact/contact"
 import { Metadata } from "next"
 import { pageWrapper } from "@/lib/utils"
 
+export const runtime = "edge"
+
 export const metadata: Metadata = {
   title: "Contact | Portfolio",
   description: "Get in touch with me",

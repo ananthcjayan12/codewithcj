@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation"
 import Image from "next/image"
-import { Github, Globe, ArrowLeft } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { Metadata } from "next"
 import Link from "next/link"
 import { projects } from "@/data/portfolio-data"
 import { container, pageWrapper } from "@/lib/utils"
+
+export const runtime = "edge"
 
 interface Props {
   params: {

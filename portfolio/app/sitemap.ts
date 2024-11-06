@@ -3,6 +3,8 @@ import { projects } from '@/data/portfolio-data'
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
 
+export const runtime = "edge"
+
 export default function sitemap(): MetadataRoute.Sitemap {
   // Get all project slugs
   const projectUrls = projects.map((project) => ({
