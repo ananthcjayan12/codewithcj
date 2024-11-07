@@ -23,20 +23,15 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
-    const category = searchParams.get('category')
     const tag = searchParams.get('tag')
     
     let query = supabase
-      .from('projects')
+      .from('blog_posts')
       .select('*')
-      .order('display_order', { ascending: true })
+      .order('created_at', { ascending: false })
 
     if (status) {
       query = query.eq('status', status)
-    }
-
-    if (category) {
-      query = query.eq('category', category)
     }
 
     if (tag) {
@@ -49,9 +44,9 @@ export async function GET(request: Request) {
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('Error fetching projects:', error)
+    console.error('Error fetching blog posts:', error)
     return new NextResponse(
-      JSON.stringify({ error: 'Error fetching projects' }), 
+      JSON.stringify({ error: 'Error fetching blog posts' }), 
       { status: 500 }
     )
   }
@@ -65,14 +60,14 @@ export async function POST(request: Request) {
 
     const body = await request.json()
     
-    // Create slug from title
-    const slug = body.title
+    // Create slug from title if not provided
+    const slug = body.slug || body.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '')
 
-    // Prepare project data
-    const projectData = {
+    // Prepare blog post data
+    const postData = {
       ...body,
       slug,
       updated_at: new Date().toISOString(),
@@ -80,8 +75,8 @@ export async function POST(request: Request) {
     }
 
     const { data, error } = await supabase
-      .from('projects')
-      .insert([projectData])
+      .from('blog_posts')
+      .insert([postData])
       .select()
       .single()
 
@@ -89,9 +84,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
-    console.error('Error creating project:', error)
+    console.error('Error creating blog post:', error)
     return new NextResponse(
-      JSON.stringify({ error: 'Error creating project' }), 
+      JSON.stringify({ error: 'Error creating blog post' }), 
       { status: 500 }
     )
   }
@@ -107,10 +102,11 @@ export async function PUT(request: Request) {
     const { id, ...updateData } = body
 
     if (!id) {
-      return new NextResponse('Project ID is required', { status: 400 })
+      return new NextResponse('Post ID is required', { status: 400 })
     }
 
-    if (updateData.title) {
+    // Update slug if title changes and slug is not provided
+    if (updateData.title && !updateData.slug) {
       updateData.slug = updateData.title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
@@ -118,7 +114,7 @@ export async function PUT(request: Request) {
     }
 
     const { data, error } = await supabase
-      .from('projects')
+      .from('blog_posts')
       .update({
         ...updateData,
         updated_at: new Date().toISOString(),
@@ -131,9 +127,9 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(data)
   } catch (error) {
-    console.error('Error updating project:', error)
+    console.error('Error updating blog post:', error)
     return new NextResponse(
-      JSON.stringify({ error: 'Error updating project' }), 
+      JSON.stringify({ error: 'Error updating blog post' }), 
       { status: 500 }
     )
   }
@@ -149,11 +145,11 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id')
 
     if (!id) {
-      return new NextResponse('Project ID is required', { status: 400 })
+      return new NextResponse('Post ID is required', { status: 400 })
     }
 
     const { error } = await supabase
-      .from('projects')
+      .from('blog_posts')
       .delete()
       .eq('id', id)
 
@@ -161,9 +157,9 @@ export async function DELETE(request: Request) {
 
     return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error('Error deleting project:', error)
+    console.error('Error deleting blog post:', error)
     return new NextResponse(
-      JSON.stringify({ error: 'Error deleting project' }), 
+      JSON.stringify({ error: 'Error deleting blog post' }), 
       { status: 500 }
     )
   }

@@ -1,68 +1,84 @@
 "use client"
 
 import { useState } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 interface DeleteDialogProps {
   postId: string
   postTitle: string
   isOpen: boolean
   onClose: () => void
+  onSuccess: () => void
 }
 
-export function DeleteDialog({ postId, postTitle, isOpen, onClose }: DeleteDialogProps) {
-  const router = useRouter()
-  const supabase = createClientComponentClient()
+export function DeleteDialog({ postId, postTitle, isOpen, onClose, onSuccess }: DeleteDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleDelete = async () => {
     setIsDeleting(true)
+    setError(null)
+    
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .delete()
-        .eq('id', postId)
+      const response = await fetch(`/api/blog?id=${postId}`, {
+        method: 'DELETE',
+        headers: {
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        }
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        throw new Error('Failed to delete post')
+      }
 
-      router.refresh()
-      onClose()
+      onSuccess()
     } catch (error) {
-      console.error('Error deleting blog post:', error)
+      console.error('Error deleting post:', error)
+      setError('Failed to delete post. Please try again.')
     } finally {
       setIsDeleting(false)
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">
-      <div className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg">
-        <div className="bg-background border rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Delete Blog Post</h2>
-          <p className="text-muted-foreground mb-4">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete Blog Post</DialogTitle>
+          <DialogDescription>
             Are you sure you want to delete &quot;{postTitle}&quot;? This action cannot be undone.
-          </p>
-          <div className="flex justify-end gap-4">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 rounded-md hover:bg-accent"
-              disabled={isDeleting}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </button>
+          </DialogDescription>
+        </DialogHeader>
+        {error && (
+          <div className="text-sm text-destructive mt-2">
+            {error}
           </div>
+        )}
+        <div className="flex justify-end gap-4 mt-4">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={isDeleting}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 } 

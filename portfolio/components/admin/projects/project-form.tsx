@@ -53,7 +53,6 @@ const iconOptions = ["code", "database", "bot", "chart", "message", "qr", "file"
 
 export function ProjectForm({ initialData }: ProjectFormProps) {
   const router = useRouter()
-  const supabase = createClientComponentClient()
   const [isLoading, setIsLoading] = useState(false)
   const [showTagCommand, setShowTagCommand] = useState(false)
   const [showFeatureCommand, setShowFeatureCommand] = useState(false)
@@ -79,6 +78,7 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     setIsLoading(true)
 
     try {
+      const supabase = createClientComponentClient()
       const { data: { session } } = await supabase.auth.getSession()
 
       if (!session) {
@@ -98,8 +98,8 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
         throw new Error('Failed to save project')
       }
 
-      router.refresh()
-      router.push('/admin/projects')
+      await router.refresh()
+      router.replace('/admin/projects')
     } catch (error) {
       console.error('Error saving project:', error)
     } finally {

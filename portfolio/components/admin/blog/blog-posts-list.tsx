@@ -12,6 +12,7 @@ interface BlogPost {
   excerpt: string
   status: 'draft' | 'published'
   created_at: string
+  slug: string
 }
 
 interface BlogPostsListProps {
@@ -21,6 +22,11 @@ interface BlogPostsListProps {
 export function BlogPostsList({ posts }: BlogPostsListProps) {
   const router = useRouter()
   const [deletePost, setDeletePost] = useState<{ id: string; title: string } | null>(null)
+
+  const handleDeleteComplete = () => {
+    setDeletePost(null)
+    router.refresh()
+  }
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -41,54 +47,57 @@ export function BlogPostsList({ posts }: BlogPostsListProps) {
           <div className="col-span-1">Actions</div>
         </div>
         <div className="divide-y">
-          {posts.map((post) => (
-            <div key={post.id} className="grid grid-cols-12 gap-4 p-4 items-center">
-              <div className="col-span-4">
-                <span className="font-medium">{post.title}</span>
+          {posts.length > 0 ? (
+            posts.map((post) => (
+              <div key={post.id} className="grid grid-cols-12 gap-4 p-4 items-center">
+                <div className="col-span-4">
+                  <span className="font-medium">{post.title}</span>
+                </div>
+                <div className="col-span-4 truncate text-muted-foreground">
+                  {post.excerpt}
+                </div>
+                <div className="col-span-2">
+                  <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                    post.status === 'published' 
+                      ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' 
+                      : 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400'
+                  }`}>
+                    {post.status}
+                  </span>
+                </div>
+                <div className="col-span-1 text-sm text-muted-foreground">
+                  {formatDate(post.created_at)}
+                </div>
+                <div className="col-span-1 flex items-center gap-1">
+                  <button
+                    onClick={() => router.push(`/admin/blog/${post.id}`)}
+                    className="p-2 hover:bg-accent rounded-md"
+                    title="Edit"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => setDeletePost({ id: post.id, title: post.title })}
+                    className="p-2 hover:bg-destructive/10 text-destructive rounded-md"
+                    title="Delete"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                  {post.status === 'published' && (
+                    <button
+                      onClick={() => router.push(`/blog/${post.slug}`)}
+                      className="p-2 hover:bg-accent rounded-md"
+                      title="View"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="col-span-4 truncate text-muted-foreground">
-                {post.excerpt}
-              </div>
-              <div className="col-span-2">
-                <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                  post.status === 'published' 
-                    ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' 
-                    : 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400'
-                }`}>
-                  {post.status}
-                </span>
-              </div>
-              <div className="col-span-1 text-sm text-muted-foreground">
-                {formatDate(post.created_at)}
-              </div>
-              <div className="col-span-1 flex items-center gap-1">
-                <button
-                  onClick={() => router.push(`/admin/blog/${post.id}`)}
-                  className="p-2 hover:bg-accent rounded-md"
-                  title="Edit"
-                >
-                  <Edit className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setDeletePost({ id: post.id, title: post.title })}
-                  className="p-2 hover:bg-destructive/10 text-destructive rounded-md"
-                  title="Delete"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => router.push(`/blog/${post.id}`)}
-                  className="p-2 hover:bg-accent rounded-md"
-                  title="View"
-                >
-                  <Eye className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          ))}
-          {posts.length === 0 && (
+            ))
+          ) : (
             <div className="p-4 text-center text-muted-foreground">
-              No blog posts found
+              No blog posts found. Create your first post!
             </div>
           )}
         </div>
@@ -100,6 +109,7 @@ export function BlogPostsList({ posts }: BlogPostsListProps) {
           postTitle={deletePost.title}
           isOpen={true}
           onClose={() => setDeletePost(null)}
+          onSuccess={handleDeleteComplete}
         />
       )}
     </>

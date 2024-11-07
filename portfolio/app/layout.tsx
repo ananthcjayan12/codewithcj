@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navigation/navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { defaultMetadata } from "@/config/metadata";
+import { Toaster } from "sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,6 +39,7 @@ export default function RootLayout({
             <Navbar />
             {children}
             <ScrollToTop />
+            <Toaster />
           </div>
         </ThemeProvider>
       </body>

@@ -1,127 +1,311 @@
 "use client"
 
 import { useState } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Loader2, X } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { RichTextEditor } from "./rich-text-editor"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { toast } from "sonner"
+import { ImageUpload } from "./image-upload"
+import { blogFormSchema, type BlogFormValues } from "@/lib/validations/blog"
 
 interface BlogFormProps {
-  initialData?: {
-    id?: string
-    title: string
-    excerpt: string
-    content: string
-    featured_image?: string
-    tags: string[]
-    status: 'draft' | 'published'
-  }
+  initialData?: BlogFormValues & { id?: string }
 }
 
 export function BlogForm({ initialData }: BlogFormProps) {
   const router = useRouter()
-  const supabase = createClientComponentClient()
   const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    title: initialData?.title || "",
-    excerpt: initialData?.excerpt || "",
-    content: initialData?.content || "",
-    featured_image: initialData?.featured_image || "",
-    tags: initialData?.tags || [""],
-    status: initialData?.status || "draft" as const
+  const [showPreview, setShowPreview] = useState(false)
+  const [newTag, setNewTag] = useState("")
+
+  // Generate initial slug from title if it exists
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '')
+  }
+
+  const form = useForm<BlogFormValues>({
+    resolver: zodResolver(blogFormSchema),
+    defaultValues: {
+      title: initialData?.title || "",
+      excerpt: initialData?.excerpt || "",
+      content: initialData?.content || "",
+      featured_image: initialData?.featured_image || "",
+      tags: initialData?.tags || [],
+      status: initialData?.status || "draft",
+      slug: initialData?.slug || "",
+    },
   })
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const onSubmit = async (data: BlogFormValues) => {
     setIsLoading(true)
-
     try {
-      const { error } = await supabase
-        .from('blog_posts')
-        .upsert({
-          id: initialData?.id,
-          ...formData,
-          updated_at: new Date().toISOString()
-        })
+      const response = await fetch('/api/blog', {
+        method: initialData?.id ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
+        },
+        body: JSON.stringify(initialData?.id ? { ...data, id: initialData.id } : data),
+      })
 
-      if (error) throw error
+      if (!response.ok) {
+        throw new Error('Failed to save post')
+      }
 
+      toast.success(initialData ? 'Post updated successfully' : 'Post created successfully')
       router.push('/admin/blog')
       router.refresh()
     } catch (error) {
-      console.error('Error saving blog post:', error)
+      console.error('Error saving post:', error)
+      toast.error('Failed to save post. Please try again.')
     } finally {
       setIsLoading(false)
     }
   }
 
+  const addTag = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && newTag.trim()) {
+      e.preventDefault()
+      const currentTags = form.getValues('tags')
+      if (!currentTags.includes(newTag.trim())) {
+        form.setValue('tags', [...currentTags, newTag.trim()])
+      }
+      setNewTag("")
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    const currentTags = form.getValues('tags')
+    form.setValue('tags', currentTags.filter(tag => tag !== tagToRemove))
+  }
+
+  // Update slug when title changes
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value
+    form.setValue('title', newTitle)
+    // Only update slug if it's empty or was auto-generated
+    if (!form.getValues('slug') || form.getValues('slug') === generateSlug(form.getValues('title'))) {
+      form.setValue('slug', generateSlug(newTitle))
+    }
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label htmlFor="title" className="text-sm font-medium">
-            Title
-          </label>
-          <input
-            id="title"
-            type="text"
-            value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            className="w-full rounded-md border bg-background px-4 py-2"
-            required
-          />
-        </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Card>
+          <CardContent className="pt-6 space-y-4">
+            {/* Title */}
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input 
+                      {...field}
+                      onChange={handleTitleChange}
+                      placeholder="Enter post title"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="space-y-2">
-          <label htmlFor="excerpt" className="text-sm font-medium">
-            Excerpt
-          </label>
-          <textarea
-            id="excerpt"
-            value={formData.excerpt}
-            onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
-            className="w-full rounded-md border bg-background px-4 py-2"
-            rows={3}
-            required
-          />
-        </div>
+            {/* Slug */}
+            <FormField
+              control={form.control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL Slug</FormLabel>
+                  <FormControl>
+                    <Input 
+                      {...field}
+                      placeholder="url-friendly-slug"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="space-y-2">
-          <label htmlFor="content" className="text-sm font-medium">
-            Content
-          </label>
-          <textarea
-            id="content"
-            value={formData.content}
-            onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-            className="w-full rounded-md border bg-background px-4 py-2"
-            rows={10}
-            required
-          />
-        </div>
+            {/* Excerpt */}
+            <FormField
+              control={form.control}
+              name="excerpt"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Excerpt</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} placeholder="Brief description of the post" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="space-y-2">
-          <label htmlFor="status" className="text-sm font-medium">
-            Status
-          </label>
-          <select
-            id="status"
-            value={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
-            className="w-full rounded-md border bg-background px-4 py-2"
-            required
+            {/* Content */}
+            <FormField
+              control={form.control}
+              name="content"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Content</FormLabel>
+                  <FormControl>
+                    <RichTextEditor content={field.value} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Tags */}
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tags</FormLabel>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {field.value.map(tag => (
+                      <Badge key={tag} variant="secondary" className="gap-1">
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => removeTag(tag)}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                  <FormControl>
+                    <Input
+                      value={newTag}
+                      onChange={e => setNewTag(e.target.value)}
+                      onKeyDown={addTag}
+                      placeholder="Type a tag and press Enter"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Featured Image */}
+            <FormField
+              control={form.control}
+              name="featured_image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Featured Image</FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      currentImage={field.value}
+                      onUploadComplete={field.onChange}
+                      label="Featured Image"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Status */}
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center gap-2">
+                    <FormControl>
+                      <Switch
+                        checked={field.value === 'published'}
+                        onCheckedChange={checked => field.onChange(checked ? 'published' : 'draft')}
+                      />
+                    </FormControl>
+                    <FormLabel>Publish post</FormLabel>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Actions */}
+        <div className="flex gap-4">
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="flex-1 md:flex-none"
           >
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </select>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {initialData ? 'Update Post' : 'Create Post'}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowPreview(true)}
+            className="flex-1 md:flex-none"
+          >
+            Preview
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.push('/admin/blog')}
+            className="flex-1 md:flex-none"
+          >
+            Cancel
+          </Button>
         </div>
-      </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-      >
-        {isLoading ? "Saving..." : "Save Post"}
-      </button>
-    </form>
+        {/* Preview Dialog */}
+        <Dialog open={showPreview} onOpenChange={setShowPreview}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{form.getValues('title') || 'Untitled'}</DialogTitle>
+              <DialogDescription>
+                {form.getValues('excerpt')}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="prose dark:prose-invert max-w-none mt-4">
+              <div dangerouslySetInnerHTML={{ __html: form.getValues('content') }} />
+            </div>
+          </DialogContent>
+        </Dialog>
+      </form>
+    </Form>
   )
 } 

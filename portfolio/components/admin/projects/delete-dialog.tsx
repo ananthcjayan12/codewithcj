@@ -3,31 +3,49 @@
 import { useState } from "react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 
 interface DeleteDialogProps {
   projectId: string
   projectTitle: string
   isOpen: boolean
   onClose: () => void
+  onSuccess: () => void
 }
 
-export function DeleteDialog({ projectId, projectTitle, isOpen, onClose }: DeleteDialogProps) {
+export function DeleteDialog({ projectId, projectTitle, isOpen, onClose, onSuccess }: DeleteDialogProps) {
   const router = useRouter()
-  const supabase = createClientComponentClient()
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      const { error } = await supabase
-        .from('projects')
-        .delete()
-        .eq('id', projectId)
+      const supabase = createClientComponentClient()
+      const { data: { session } } = await supabase.auth.getSession()
 
-      if (error) throw error
+      if (!session) {
+        throw new Error('Not authenticated')
+      }
 
-      router.refresh()
-      onClose()
+      const response = await fetch(`/api/projects?id=${projectId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete project')
+      }
+
+      onSuccess()
     } catch (error) {
       console.error('Error deleting project:', error)
     } finally {
@@ -35,34 +53,32 @@ export function DeleteDialog({ projectId, projectTitle, isOpen, onClose }: Delet
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">
-      <div className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-full max-w-lg">
-        <div className="bg-background border rounded-lg shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Delete Project</h2>
-          <p className="text-muted-foreground mb-4">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete Project</DialogTitle>
+          <DialogDescription>
             Are you sure you want to delete &quot;{projectTitle}&quot;? This action cannot be undone.
-          </p>
-          <div className="flex justify-end gap-4">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 rounded-md hover:bg-accent"
-              disabled={isDeleting}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
-            >
-              {isDeleting ? "Deleting..." : "Delete"}
-            </button>
-          </div>
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex justify-end gap-4 mt-4">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={isDeleting}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Delete"}
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 } 
