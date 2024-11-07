@@ -28,30 +28,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="manifest" href="/manifest.json" />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="relative flex min-h-screen flex-col">
-            <Navbar />
-            <main className="flex-1 pt-14">{children}</main>
-            <ScrollToTop />
-          </div>
-        </ThemeProvider>
+      <body>
+        {children}
       </body>
     </html>
-  );
+  )
 }
+
+// Force static rendering at the root
+export const dynamic = 'force-static'
+export const revalidate = 3600

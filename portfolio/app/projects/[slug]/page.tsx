@@ -2,13 +2,19 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, Code2, Database, Bot, LineChart, MessageSquare, QrCode, FileText, Video, BarChart, Cog, Brain, Building2, Workflow } from "lucide-react"
 import { Metadata } from "next"
 import Link from "next/link"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
+import { getProject } from "@/lib/supabase"
 import { container, pageWrapper } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { cache } from 'react'
 
-export const runtime = "edge"
-export const revalidate = 0
+// Remove edge runtime
+// export const runtime = "edge"
 
+// Use static rendering with ISR
+export const dynamic = 'force-static'
+export const revalidate = 3600 // Cache for 1 hour
+
+// Move iconMap outside component to prevent recreation
 const iconMap = {
   code: Code2,
   database: Database,
@@ -23,6 +29,24 @@ const iconMap = {
   ai: Brain,
   erp: Building2,
   workflow: Workflow,
+} as const
+
+// Add proper typing for project data
+interface Project {
+  id: string
+  title: string
+  description: string
+  long_description: string | null
+  icon: string | null
+  tags: string[]
+  category: string | null
+  technical_details: string | null
+  key_features: string[] | null
+  challenges: string | null
+  solutions: string | null
+  github_url: string | null
+  live_url: string | null
+  status: 'draft' | 'published'
 }
 
 interface Props {
@@ -31,31 +55,16 @@ interface Props {
   }
 }
 
-async function getProject(slug: string) {
-  const supabase = createServerComponentClient({ cookies })
-  
-  const { data: project, error } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('slug', slug)
-    .single()
-
-  if (error || !project) {
-    return null
-  }
-
+// Use React's cache for project data
+const getProjectData = cache(async (slug: string) => {
+  const project = await getProject(slug)
+  if (!project) notFound()
   return project
-}
+})
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = await getProject(params.slug)
-
-  if (!project) {
-    return {
-      title: "Project Not Found",
-    }
-  }
-
+  const project = await getProjectData(params.slug)
+  
   return {
     title: `${project.title} | Portfolio`,
     description: project.description,
@@ -63,11 +72,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProjectPage({ params }: Props) {
-  const project = await getProject(params.slug)
-
-  if (!project) {
-    notFound()
-  }
+  const project = await getProjectData(params.slug)
 
   const IconComponent = iconMap[project.icon as keyof typeof iconMap] || Code2
 
@@ -75,15 +80,13 @@ export default async function ProjectPage({ params }: Props) {
     <main className={pageWrapper}>
       <div className={container}>
         <div className="mx-auto max-w-4xl space-y-8">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/projects"
-              className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Projects
-            </Link>
-          </div>
+          <Link
+            href="/projects"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Projects
+          </Link>
 
           <div className="space-y-6">
             <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10">
@@ -94,12 +97,9 @@ export default async function ProjectPage({ params }: Props) {
               <h1 className="text-4xl font-bold tracking-tight">{project.title}</h1>
               <div className="flex flex-wrap gap-2">
                 {project.tags?.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-secondary px-3 py-1 text-sm font-medium"
-                  >
+                  <Badge key={tag} variant="secondary">
                     {tag}
-                  </span>
+                  </Badge>
                 ))}
               </div>
               <p className="text-xl text-muted-foreground leading-relaxed">
@@ -193,4 +193,18 @@ export default async function ProjectPage({ params }: Props) {
       </div>
     </main>
   )
+}
+
+// Pre-render popular projects
+export async function generateStaticParams() {
+  const { data: projects } = await supabase
+    .from('projects')
+    .select('slug')
+    .eq('status', 'published')
+    .order('display_order', { ascending: true })
+    .limit(10)
+
+  return (projects || []).map((project) => ({
+    slug: project.slug,
+  }))
 } 

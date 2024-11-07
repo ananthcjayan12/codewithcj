@@ -1,19 +1,21 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
+
+// Cache the Supabase client creation
+const createServerClient = cache(() => {
+  return createServerComponentClient({ cookies })
+})
 
 export async function getProjects() {
-  const supabase = createServerComponentClient({ cookies })
-  
-  console.log('Fetching projects from Supabase...')
+  const supabase = createServerClient()
   
   try {
     const { data, error } = await supabase
       .from('projects')
-      .select('*')
+      .select('id, title, description, category, tags, slug, status')  // Select only needed fields
       .eq('status', 'published')
       .order('display_order', { ascending: true })
-    
-    console.log('Projects fetch result:', { data, error })
     
     if (error) throw error
     return data || []
@@ -23,16 +25,30 @@ export async function getProjects() {
   }
 }
 
-export async function getProject(slug: string) {
-  const supabase = createServerComponentClient({ cookies })
+export const getProject = cache(async (slug: string) => {
+  const supabase = createServerClient()
   
   try {
     const { data, error } = await supabase
       .from('projects')
       .select(`
-        *
+        id,
+        title,
+        description,
+        long_description,
+        icon,
+        tags,
+        category,
+        technical_details,
+        key_features,
+        challenges,
+        solutions,
+        github_url,
+        live_url,
+        status
       `)
       .eq('slug', slug)
+      .eq('status', 'published')
       .single()
     
     if (error) throw error
@@ -41,4 +57,4 @@ export async function getProject(slug: string) {
     console.error('Error fetching project:', error)
     return null
   }
-} 
+}) 

@@ -24,7 +24,7 @@ CREATE TABLE profiles (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Projects table
+-- Projects table with updated fields and constraints
 CREATE TABLE projects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
@@ -152,9 +152,13 @@ CREATE POLICY "Settings are editable by admins"
     ON settings FOR ALL
     USING (auth.role() = 'authenticated');
 
--- Create indexes
-CREATE INDEX projects_slug_idx ON projects(slug);
-CREATE INDEX blog_posts_slug_idx ON blog_posts(slug);
-CREATE INDEX projects_status_idx ON projects(status);
-CREATE INDEX blog_posts_status_idx ON blog_posts(status);
-CREATE INDEX projects_category_idx ON projects(category);
+-- Create optimized indexes for better query performance
+CREATE INDEX IF NOT EXISTS projects_slug_status_idx ON projects(slug, status);
+CREATE INDEX IF NOT EXISTS projects_status_display_order_idx ON projects(status, display_order);
+CREATE INDEX IF NOT EXISTS projects_category_idx ON projects(category);
+CREATE INDEX IF NOT EXISTS blog_posts_slug_idx ON blog_posts(slug);
+CREATE INDEX IF NOT EXISTS blog_posts_status_idx ON blog_posts(status);
+
+-- Drop redundant single-column indexes since we have combined ones
+DROP INDEX IF EXISTS projects_status_idx;
+DROP INDEX IF EXISTS projects_slug_idx;
