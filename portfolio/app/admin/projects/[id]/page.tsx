@@ -1,7 +1,19 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import { ProjectForm } from "@/components/admin/projects/project-form"
+import { createClient } from '@supabase/supabase-js'
 import { notFound } from "next/navigation"
+import { ProjectForm } from "@/components/admin/projects/project-form"
+import { unstable_noStore } from 'next/cache'
+
+// Create a Supabase client with service role
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  }
+)
 
 interface Props {
   params: {
@@ -10,15 +22,17 @@ interface Props {
 }
 
 export default async function EditProjectPage({ params }: Props) {
-  const supabase = createServerComponentClient({ cookies })
+  // Disable caching for this page
+  unstable_noStore()
   
-  const { data: project } = await supabase
+  const { data: project, error } = await supabase
     .from('projects')
     .select('*')
     .eq('id', params.id)
     .single()
 
-  if (!project) {
+  if (error || !project) {
+    console.error('Error fetching project:', error)
     notFound()
   }
 
@@ -27,7 +41,7 @@ export default async function EditProjectPage({ params }: Props) {
       <div>
         <h1 className="text-3xl font-bold">Edit Project</h1>
         <p className="text-muted-foreground">
-          Update your project information
+          Make changes to your project
         </p>
       </div>
       <ProjectForm initialData={project} />

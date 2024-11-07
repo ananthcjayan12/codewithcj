@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
 
 interface DeleteDialogProps {
   projectId: string
@@ -21,23 +20,18 @@ interface DeleteDialogProps {
 }
 
 export function DeleteDialog({ projectId, projectTitle, isOpen, onClose, onSuccess }: DeleteDialogProps) {
-  const router = useRouter()
   const [isDeleting, setIsDeleting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleDelete = async () => {
     setIsDeleting(true)
+    setError(null)
+    
     try {
-      const supabase = createClientComponentClient()
-      const { data: { session } } = await supabase.auth.getSession()
-
-      if (!session) {
-        throw new Error('Not authenticated')
-      }
-
       const response = await fetch(`/api/projects?id=${projectId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${session.access_token}`
+          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
         }
       })
 
@@ -48,6 +42,7 @@ export function DeleteDialog({ projectId, projectTitle, isOpen, onClose, onSucce
       onSuccess()
     } catch (error) {
       console.error('Error deleting project:', error)
+      setError('Failed to delete project. Please try again.')
     } finally {
       setIsDeleting(false)
     }
@@ -62,6 +57,11 @@ export function DeleteDialog({ projectId, projectTitle, isOpen, onClose, onSucce
             Are you sure you want to delete &quot;{projectTitle}&quot;? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
+        {error && (
+          <div className="text-sm text-destructive mt-2">
+            {error}
+          </div>
+        )}
         <div className="flex justify-end gap-4 mt-4">
           <Button
             variant="outline"

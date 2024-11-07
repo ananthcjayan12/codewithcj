@@ -7,6 +7,7 @@
      - [x] POST - Create new project
      - [x] PUT - Update project
      - [x] DELETE - Remove project
+     - [x] POST /reorder - Reorder projects
    - [x] Blog API (/api/blog)
      - [x] GET - List all posts
      - [x] POST - Create new post
@@ -25,28 +26,39 @@
    - [x] Blog form component
    - [x] Image upload handling
    - [x] Edit blog post page
+   - [x] New blog post page
    - [x] Loading states
    - [x] Form validation
    - [x] Error handling
 
+4. Project UI Components
+   - [x] New project page
+   - [x] Loading states
+   - [x] Project validation schema
+   - [x] Project form component
+   - [x] Project list view
+   - [x] Project delete dialog
+   - [x] Project edit page
+   - [x] Project reordering
+   - [x] Project image upload
+
 ## In Progress 🚧
-1. Blog UI Components
-   - [ ] Preview functionality (Next to implement)
-   - [ ] Draft/publish workflow
-   - [ ] Tags management
+1. Project Management
+   - [ ] Project categories (Next to implement)
+   - [ ] Project search
+   - [ ] Project analytics
 
 ## Next Steps 📝
-1. Blog Management
-   - [ ] Image optimization
-   - [ ] SEO optimization
-   - [ ] Categories system
-   - [ ] Search functionality
+1. Project Features
+   - [ ] Bulk actions
+   - [ ] Project templates
+   - [ ] Project preview
+   - [ ] Project filters
 
-2. Project Management Updates
-   - [ ] Add image upload
-   - [ ] Add reordering capability
-   - [ ] Add bulk actions
-   - [ ] Category filters
+2. Enhancements
+   - [ ] SEO optimization
+   - [ ] Image optimization
+   - [ ] Performance improvements
 
 ## Known Issues 🐛
 None currently - all major issues resolved

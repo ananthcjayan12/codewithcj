@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { projectFormSchema } from '@/lib/validations/project'
 
 // Create a Supabase client with service role
 const supabase = createClient(
@@ -64,16 +65,19 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
+
+    // Validate request body
+    const validatedData = projectFormSchema.parse(body)
     
-    // Create slug from title
-    const slug = body.title
+    // Create slug from title if not provided
+    const slug = validatedData.slug || validatedData.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '')
 
     // Prepare project data
     const projectData = {
-      ...body,
+      ...validatedData,
       slug,
       updated_at: new Date().toISOString(),
       created_at: new Date().toISOString(),
@@ -90,6 +94,12 @@ export async function POST(request: Request) {
     return NextResponse.json(data, { status: 201 })
   } catch (error) {
     console.error('Error creating project:', error)
+    if (error instanceof Error) {
+      return new NextResponse(
+        JSON.stringify({ error: error.message }), 
+        { status: 400 }
+      )
+    }
     return new NextResponse(
       JSON.stringify({ error: 'Error creating project' }), 
       { status: 500 }
@@ -110,8 +120,12 @@ export async function PUT(request: Request) {
       return new NextResponse('Project ID is required', { status: 400 })
     }
 
-    if (updateData.title) {
-      updateData.slug = updateData.title
+    // Validate request body
+    const validatedData = projectFormSchema.parse(updateData)
+
+    // Update slug if title changes and slug is not provided
+    if (validatedData.title && !validatedData.slug) {
+      validatedData.slug = validatedData.title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)+/g, '')
@@ -120,7 +134,7 @@ export async function PUT(request: Request) {
     const { data, error } = await supabase
       .from('projects')
       .update({
-        ...updateData,
+        ...validatedData,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -132,6 +146,12 @@ export async function PUT(request: Request) {
     return NextResponse.json(data)
   } catch (error) {
     console.error('Error updating project:', error)
+    if (error instanceof Error) {
+      return new NextResponse(
+        JSON.stringify({ error: error.message }), 
+        { status: 400 }
+      )
+    }
     return new NextResponse(
       JSON.stringify({ error: 'Error updating project' }), 
       { status: 500 }
