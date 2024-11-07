@@ -1,0 +1,214 @@
+{
+  "info": {
+    "_postman_id": "bc0adafb-747d-4bd4-a55c-412a64adb64f",
+    "name": "Portfolio Projects API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "10430071"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    var jsonData = pm.response.json();",
+              "    pm.environment.set(\"authToken\", jsonData.token);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"your-email@example.com\",\n    \"password\": \"your-password\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/auth/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Project",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Successful POST request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"AI Chat Application\",\n    \"description\": \"A real-time chat application powered by AI\",\n    \"long_description\": \"A comprehensive chat platform that leverages AI for intelligent responses...\",\n    \"icon\": \"bot\",\n    \"tags\": [\"AI\", \"React\", \"Node.js\", \"WebSocket\"],\n    \"category\": \"ai\",\n    \"technical_details\": \"Built using React, Node.js, and OpenAI's GPT-3.5\",\n    \"key_features\": [\n        \"Real-time messaging\",\n        \"AI-powered responses\",\n        \"User authentication\",\n        \"Message history\"\n    ],\n    \"challenges\": \"Implementing real-time communication while maintaining low latency...\",\n    \"solutions\": \"Used WebSocket for real-time updates and implemented message queuing...\",\n    \"github_url\": \"https://github.com/username/ai-chat\",\n    \"live_url\": \"https://ai-chat-demo.vercel.app\",\n    \"status\": \"published\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/projects",
+          "host": ["{{base_url}}"],
+          "path": ["api", "projects"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Project",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Successful PUT request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": \"project-uuid-here\",\n    \"title\": \"Updated AI Chat Application\",\n    \"description\": \"An enhanced real-time chat application\",\n    \"tags\": [\"AI\", \"React\", \"Node.js\", \"WebSocket\", \"TypeScript\"],\n    \"status\": \"published\",\n    \"key_features\": [\n        \"Real-time messaging\",\n        \"AI-powered responses\",\n        \"User authentication\",\n        \"Message history\",\n        \"Video calls\"\n    ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/api/projects",
+          "host": ["{{base_url}}"],
+          "path": ["api", "projects"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Project",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Successful DELETE request\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/api/projects?id=project-uuid-here",
+          "host": ["{{base_url}}"],
+          "path": ["api", "projects"],
+          "query": [
+            {
+              "key": "id",
+              "value": "project-uuid-here"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "headerPrefix",
+        "value": "Token ",
+        "type": "string"
+      },
+      {
+        "key": "grant_type",
+        "value": "implicit",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "your-secret-api-key",
+      "type": "string"
+    }
+  ]
+} 

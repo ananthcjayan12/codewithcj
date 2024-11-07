@@ -79,26 +79,23 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     setIsLoading(true)
 
     try {
-      const slug = formData.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '')
+      const { data: { session } } = await supabase.auth.getSession()
 
-      const projectData = {
-        ...formData,
-        slug,
-        updated_at: new Date().toISOString(),
+      if (!session) {
+        throw new Error('Not authenticated')
       }
 
-      if (initialData?.id) {
-        await supabase
-          .from('projects')
-          .update(projectData)
-          .eq('id', initialData.id)
-      } else {
-        await supabase
-          .from('projects')
-          .insert([projectData])
+      const response = await fetch('/api/projects', {
+        method: initialData?.id ? 'PUT' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify(initialData?.id ? { ...formData, id: initialData.id } : formData),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to save project')
       }
 
       router.refresh()

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, Code2, Database, Bot, LineChart, MessageSquare, QrCode, FileText, Video, BarChart, Cog, Brain, Building2, Workflow } from "lucide-react"
 import { Metadata } from "next"
 import Link from "next/link"
-import { getProject } from "@/lib/supabase"
+import { getProject, getProjects } from "@/lib/supabase"
 import { container, pageWrapper } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { cache } from 'react'
@@ -195,16 +195,11 @@ export default async function ProjectPage({ params }: Props) {
   )
 }
 
-// Pre-render popular projects
+// Update generateStaticParams to use getProjects
 export async function generateStaticParams() {
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('slug')
-    .eq('status', 'published')
-    .order('display_order', { ascending: true })
-    .limit(10)
-
-  return (projects || []).map((project) => ({
+  const projects = await getProjects()
+  
+  return projects.map((project) => ({
     slug: project.slug,
   }))
 } 
