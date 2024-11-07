@@ -2,10 +2,12 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, Code2, Database, Bot, LineChart, MessageSquare, QrCode, FileText, Video, BarChart, Cog, Brain, Building2, Workflow } from "lucide-react"
 import { Metadata } from "next"
 import Link from "next/link"
-import { projects } from "@/data/portfolio-data"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from "next/headers"
 import { container, pageWrapper } from "@/lib/utils"
 
 export const runtime = "edge"
+export const revalidate = 0
 
 const iconMap = {
   code: Code2,
@@ -29,8 +31,24 @@ interface Props {
   }
 }
 
+async function getProject(slug: string) {
+  const supabase = createServerComponentClient({ cookies })
+  
+  const { data: project, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('slug', slug)
+    .single()
+
+  if (error || !project) {
+    return null
+  }
+
+  return project
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = projects.find((p) => p.slug === params.slug)
+  const project = await getProject(params.slug)
 
   if (!project) {
     return {
@@ -44,14 +62,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function ProjectPage({ params }: Props) {
-  const project = projects.find((p) => p.slug === params.slug)
+export default async function ProjectPage({ params }: Props) {
+  const project = await getProject(params.slug)
 
   if (!project) {
     notFound()
   }
 
-  const IconComponent = iconMap[project.icon] || Code2
+  const IconComponent = iconMap[project.icon as keyof typeof iconMap] || Code2
 
   return (
     <main className={pageWrapper}>
@@ -75,7 +93,7 @@ export default function ProjectPage({ params }: Props) {
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tight">{project.title}</h1>
               <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
+                {project.tags?.map((tag) => (
                   <span
                     key={tag}
                     className="rounded-full bg-secondary px-3 py-1 text-sm font-medium"
@@ -92,31 +110,74 @@ export default function ProjectPage({ params }: Props) {
 
           <div className="prose dark:prose-invert max-w-none">
             <h2>Project Overview</h2>
-            <p className="leading-relaxed">{project.longDescription}</p>
+            <p className="leading-relaxed">{project.long_description}</p>
 
-            <h2>Key Features</h2>
-            <ul className="space-y-2">
-              {project.tags.map((tag) => (
-                <li key={tag} className="flex items-start gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary/50 flex-shrink-0" />
-                  <span>
-                    <strong>{tag}:</strong> Implementation and usage in the project
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {project.technical_details && (
+              <>
+                <h2>Technical Details</h2>
+                <p className="leading-relaxed">{project.technical_details}</p>
+              </>
+            )}
 
-            <h2>Technical Details</h2>
-            <p className="leading-relaxed">
-              This project was built using {project.tags.join(", ")}, 
-              demonstrating the practical application of these technologies in a real-world scenario.
-            </p>
+            {project.key_features && project.key_features.length > 0 && (
+              <>
+                <h2>Key Features</h2>
+                <ul className="space-y-2">
+                  {project.key_features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary/50 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-            <h2>Challenges & Solutions</h2>
-            <p className="leading-relaxed">
-              During the development of this project, various technical challenges were encountered
-              and overcome through innovative solutions and best practices.
-            </p>
+            {(project.challenges || project.solutions) && (
+              <>
+                <h2>Challenges & Solutions</h2>
+                {project.challenges && (
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold">Challenges</h3>
+                    <p className="leading-relaxed">{project.challenges}</p>
+                  </div>
+                )}
+                {project.solutions && (
+                  <div>
+                    <h3 className="text-lg font-semibold">Solutions</h3>
+                    <p className="leading-relaxed">{project.solutions}</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {(project.github_url || project.live_url) && (
+              <>
+                <h2>Project Links</h2>
+                <div className="flex gap-4">
+                  {project.github_url && (
+                    <a 
+                      href={project.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-primary hover:underline"
+                    >
+                      <span>GitHub Repository</span>
+                    </a>
+                  )}
+                  {project.live_url && (
+                    <a 
+                      href={project.live_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-primary hover:underline"
+                    >
+                      <span>Live Demo</span>
+                    </a>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           <div className="flex gap-4 pt-8">

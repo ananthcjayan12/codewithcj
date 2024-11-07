@@ -1,97 +1,61 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
 import { ProjectCard } from "@/components/ui/project-card"
-import { projects } from "@/data/portfolio-data"
-import { container, section, sectionHeading, sectionSubHeading } from "@/lib/utils"
-import { Cog, Brain, Building2, LineChart, Code2 } from "lucide-react"
 
-const categories = [
-  { name: "All", icon: Code2 },
-  { name: "Automation", icon: Cog },
-  { name: "AI", icon: Brain },
-  { name: "Business", icon: Building2 },
-  { name: "Finance", icon: LineChart },
-] as const
+interface Project {
+  id: string
+  title: string
+  description: string
+  long_description: string
+  icon: string
+  tags: string[]
+  category: string
+  slug?: string
+  status: 'draft' | 'published'
+}
 
-export function ProjectsSection() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All")
+interface ProjectsProps {
+  initialProjects: Project[]
+}
 
-  const filteredProjects = selectedCategory === "All"
-    ? projects
-    : projects.filter((project) => project.category === selectedCategory)
+export default function Projects({ initialProjects }: ProjectsProps) {
+  console.log('Projects: Rendering with initialProjects:', initialProjects?.length)
+
+  if (!initialProjects || initialProjects.length === 0) {
+    return (
+      <section id="projects" className="py-16">
+        <div className="container">
+          <h2 className="text-3xl font-bold mb-8">Featured Projects</h2>
+          <p className="text-muted-foreground">No projects available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className={section}>
-      <div className={container}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-4 mb-12"
-        >
-          <h1 className={sectionHeading}>Projects & Solutions</h1>
-          <p className={sectionSubHeading}>
-            Explore my portfolio of automation, AI, and full-stack development projects. 
-            Each project demonstrates my commitment to creating efficient, scalable solutions.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-wrap gap-3 mb-12"
-        >
-          {categories.map((category) => {
-            const Icon = category.icon
+    <section id="projects" className="py-16">
+      <div className="container">
+        <h2 className="text-3xl font-bold mb-8">Featured Projects</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {initialProjects.map((project) => {
+            console.log('Projects: Rendering project:', project.title)
+            if (!project) return null;
+            
             return (
-              <button
-                key={category.name}
-                onClick={() => setSelectedCategory(category.name)}
-                className={`inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-medium transition-colors ${
-                  selectedCategory === category.name
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {category.name}
-              </button>
-            )
+              <ProjectCard 
+                key={project.id} 
+                project={{
+                  id: project.id,
+                  title: project.title || '',
+                  description: project.description || '',
+                  category: project.category || '',
+                  tags: project.tags || [],
+                  slug: project.slug
+                }} 
+              />
+            );
           })}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
-        >
-          {filteredProjects.map((project) => (
-            <ProjectCard
-              key={project.slug}
-              title={project.title}
-              description={project.description}
-              tags={project.tags}
-              slug={project.slug}
-              icon={project.icon}
-            />
-          ))}
-        </motion.div>
-
-        {filteredProjects.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
-            <p className="text-lg text-muted-foreground">
-              No projects found in this category.
-            </p>
-          </motion.div>
-        )}
+        </div>
       </div>
     </section>
   )

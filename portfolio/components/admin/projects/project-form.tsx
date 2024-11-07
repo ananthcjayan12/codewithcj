@@ -3,6 +3,30 @@
 import { useState } from "react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { X, Plus, Loader2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Switch } from "@/components/ui/switch"
 
 interface ProjectFormProps {
   initialData?: {
@@ -15,41 +39,70 @@ interface ProjectFormProps {
     category: string
     slug: string
     status: 'draft' | 'published'
+    technical_details?: string
+    key_features?: string[]
+    challenges?: string
+    solutions?: string
+    github_url?: string
+    live_url?: string
   }
 }
+
+const categories = ["Automation", "AI", "Business", "Finance", "Other"]
+const iconOptions = ["code", "database", "bot", "chart", "message", "qr", "file", "video", "bar", "automation", "ai", "erp", "workflow"]
 
 export function ProjectForm({ initialData }: ProjectFormProps) {
   const router = useRouter()
   const supabase = createClientComponentClient()
   const [isLoading, setIsLoading] = useState(false)
+  const [showTagCommand, setShowTagCommand] = useState(false)
+  const [showFeatureCommand, setShowFeatureCommand] = useState(false)
+  const [inputValue, setInputValue] = useState("")
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
     description: initialData?.description || "",
     long_description: initialData?.long_description || "",
     icon: initialData?.icon || "code",
-    tags: initialData?.tags || [""],
-    category: initialData?.category || "Automation",
-    slug: initialData?.slug || "",
-    status: initialData?.status || "draft" as const
+    tags: initialData?.tags || [],
+    category: initialData?.category || "",
+    status: initialData?.status || "draft",
+    technical_details: initialData?.technical_details || "",
+    key_features: initialData?.key_features || [],
+    challenges: initialData?.challenges || "",
+    solutions: initialData?.solutions || "",
+    github_url: initialData?.github_url || "",
+    live_url: initialData?.live_url || "",
   })
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
-      const { error } = await supabase
-        .from('projects')
-        .upsert({
-          id: initialData?.id,
-          ...formData,
-          updated_at: new Date().toISOString()
-        })
+      const slug = formData.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)+/g, '')
 
-      if (error) throw error
+      const projectData = {
+        ...formData,
+        slug,
+        updated_at: new Date().toISOString(),
+      }
 
-      router.push('/admin/projects')
+      if (initialData?.id) {
+        await supabase
+          .from('projects')
+          .update(projectData)
+          .eq('id', initialData.id)
+      } else {
+        await supabase
+          .from('projects')
+          .insert([projectData])
+      }
+
       router.refresh()
+      router.push('/admin/projects')
     } catch (error) {
       console.error('Error saving project:', error)
     } finally {
@@ -57,109 +110,302 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
     }
   }
 
+  const addTag = (value: string) => {
+    if (value.trim() && !formData.tags.includes(value.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, value.trim()]
+      }))
+    }
+    setShowTagCommand(false)
+    setInputValue("")
+  }
+
+  const addFeature = (value: string) => {
+    if (value.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        key_features: [...(prev.key_features || []), value.trim()]
+      }))
+    }
+    setShowFeatureCommand(false)
+    setInputValue("")
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }))
+  }
+
+  const removeFeature = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      key_features: prev.key_features?.filter((_, i) => i !== index) || []
+    }))
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label htmlFor="title" className="text-sm font-medium">
-              Title
-            </label>
-            <input
-              id="title"
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              className="w-full rounded-md border bg-background px-4 py-2"
-              required
-            />
+      <Card>
+        <CardContent className="pt-6 space-y-6">
+          {/* Basic Information */}
+          <div className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  value={formData.title}
+                  onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  placeholder="Project title"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="category">Category</Label>
+                <Select 
+                  value={formData.category}
+                  onValueChange={value => setFormData(prev => ({ ...prev, category: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map(category => (
+                      <SelectItem key={category} value={category.toLowerCase()}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Short Description</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Brief project description"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="long_description">Full Description</Label>
+              <Textarea
+                id="long_description"
+                value={formData.long_description}
+                onChange={e => setFormData(prev => ({ ...prev, long_description: e.target.value }))}
+                placeholder="Detailed project description"
+                rows={5}
+              />
+            </div>
           </div>
+
+          {/* Tags */}
           <div className="space-y-2">
-            <label htmlFor="slug" className="text-sm font-medium">
-              Slug
-            </label>
-            <input
-              id="slug"
-              type="text"
-              value={formData.slug}
-              onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-              className="w-full rounded-md border bg-background px-4 py-2"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="description" className="text-sm font-medium">
-            Short Description
-          </label>
-          <textarea
-            id="description"
-            value={formData.description}
-            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            className="w-full rounded-md border bg-background px-4 py-2"
-            rows={2}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="long_description" className="text-sm font-medium">
-            Full Description
-          </label>
-          <textarea
-            id="long_description"
-            value={formData.long_description}
-            onChange={(e) => setFormData(prev => ({ ...prev, long_description: e.target.value }))}
-            className="w-full rounded-md border bg-background px-4 py-2"
-            rows={6}
-            required
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label htmlFor="category" className="text-sm font-medium">
-              Category
-            </label>
-            <select
-              id="category"
-              value={formData.category}
-              onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-              className="w-full rounded-md border bg-background px-4 py-2"
-              required
+            <Label>Tags</Label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {formData.tags.map(tag => (
+                <Badge key={tag} className="gap-1">
+                  {tag}
+                  <button
+                    type="button"
+                    onClick={() => removeTag(tag)}
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowTagCommand(true)}
             >
-              <option value="Automation">Automation</option>
-              <option value="AI">AI</option>
-              <option value="Business">Business</option>
-              <option value="Finance">Finance</option>
-            </select>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Tag
+            </Button>
           </div>
+
+          {/* Key Features */}
           <div className="space-y-2">
-            <label htmlFor="status" className="text-sm font-medium">
-              Status
-            </label>
-            <select
+            <Label>Key Features</Label>
+            <div className="space-y-2 mb-2">
+              {formData.key_features?.map((feature, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Badge variant="secondary" className="flex-1">
+                    {feature}
+                  </Badge>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeFeature(index)}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowFeatureCommand(true)}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Feature
+            </Button>
+          </div>
+
+          {/* Technical Details */}
+          <div className="space-y-2">
+            <Label htmlFor="technical_details">Technical Details</Label>
+            <Textarea
+              id="technical_details"
+              value={formData.technical_details}
+              onChange={e => setFormData(prev => ({ ...prev, technical_details: e.target.value }))}
+              placeholder="Technical implementation details"
+              rows={4}
+            />
+          </div>
+
+          {/* Challenges & Solutions */}
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="challenges">Challenges</Label>
+              <Textarea
+                id="challenges"
+                value={formData.challenges}
+                onChange={e => setFormData(prev => ({ ...prev, challenges: e.target.value }))}
+                placeholder="Project challenges"
+                rows={4}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="solutions">Solutions</Label>
+              <Textarea
+                id="solutions"
+                value={formData.solutions}
+                onChange={e => setFormData(prev => ({ ...prev, solutions: e.target.value }))}
+                placeholder="Solutions implemented"
+                rows={4}
+              />
+            </div>
+          </div>
+
+          {/* URLs */}
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="github_url">GitHub URL</Label>
+              <Input
+                id="github_url"
+                type="url"
+                value={formData.github_url}
+                onChange={e => setFormData(prev => ({ ...prev, github_url: e.target.value }))}
+                placeholder="https://github.com/..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="live_url">Live Demo URL</Label>
+              <Input
+                id="live_url"
+                type="url"
+                value={formData.live_url}
+                onChange={e => setFormData(prev => ({ ...prev, live_url: e.target.value }))}
+                placeholder="https://..."
+              />
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="flex items-center gap-2">
+            <Switch
               id="status"
-              value={formData.status}
-              onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'draft' | 'published' }))}
-              className="w-full rounded-md border bg-background px-4 py-2"
-              required
-            >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
-            </select>
+              checked={formData.status === 'published'}
+              onCheckedChange={checked => setFormData(prev => ({
+                ...prev,
+                status: checked ? 'published' : 'draft'
+              }))}
+            />
+            <Label htmlFor="status">Publish project</Label>
           </div>
-        </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex gap-4">
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="flex-1 md:flex-none"
+        >
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {initialData ? 'Update Project' : 'Create Project'}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push('/admin/projects')}
+          className="flex-1 md:flex-none"
+        >
+          Cancel
+        </Button>
       </div>
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-      >
-        {isLoading ? "Saving..." : "Save Project"}
-      </button>
+      {/* Tag Command Dialog */}
+      <CommandDialog open={showTagCommand} onOpenChange={setShowTagCommand}>
+        <Command>
+          <CommandInput 
+            placeholder="Type a tag..." 
+            value={inputValue}
+            onValueChange={setInputValue}
+          />
+          <CommandList>
+            <CommandEmpty>
+              Press enter to add "{inputValue}"
+            </CommandEmpty>
+            <CommandGroup>
+              {inputValue && (
+                <CommandItem
+                  onSelect={() => addTag(inputValue)}
+                >
+                  Add "{inputValue}"
+                </CommandItem>
+              )}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </CommandDialog>
+
+      {/* Feature Command Dialog */}
+      <CommandDialog open={showFeatureCommand} onOpenChange={setShowFeatureCommand}>
+        <Command>
+          <CommandInput 
+            placeholder="Type a feature..." 
+            value={inputValue}
+            onValueChange={setInputValue}
+          />
+          <CommandList>
+            <CommandEmpty>
+              Press enter to add "{inputValue}"
+            </CommandEmpty>
+            <CommandGroup>
+              {inputValue && (
+                <CommandItem
+                  onSelect={() => addFeature(inputValue)}
+                >
+                  Add "{inputValue}"
+                </CommandItem>
+              )}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </CommandDialog>
     </form>
   )
 } 

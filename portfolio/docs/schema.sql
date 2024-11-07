@@ -29,13 +29,19 @@ CREATE TABLE projects (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
     description TEXT NOT NULL,
-    long_description TEXT NOT NULL,
-    icon TEXT NOT NULL,
+    long_description TEXT,
+    icon TEXT,
     tags TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
-    category TEXT NOT NULL,
-    slug TEXT NOT NULL UNIQUE,
+    category TEXT,
+    slug TEXT,
     display_order INTEGER NOT NULL DEFAULT 0,
     status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+    technical_details TEXT,
+    key_features TEXT[],
+    challenges TEXT,
+    solutions TEXT,
+    github_url TEXT,
+    live_url TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -151,4 +157,4 @@ CREATE INDEX projects_slug_idx ON projects(slug);
 CREATE INDEX blog_posts_slug_idx ON blog_posts(slug);
 CREATE INDEX projects_status_idx ON projects(status);
 CREATE INDEX blog_posts_status_idx ON blog_posts(status);
-CREATE INDEX projects_category_idx ON projects(category); 
+CREATE INDEX projects_category_idx ON projects(category);

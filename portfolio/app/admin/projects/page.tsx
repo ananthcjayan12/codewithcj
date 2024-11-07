@@ -1,6 +1,7 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { ProjectsList } from "@/components/admin/projects/projects-list"
+import Link from "next/link"
 
 export default async function ProjectsPage() {
   const supabase = createServerComponentClient({ cookies })
@@ -19,11 +20,12 @@ export default async function ProjectsPage() {
             Manage your portfolio projects
           </p>
         </div>
-        <button
+        <Link
+          href="/admin/projects/new"
           className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           Add Project
-        </button>
+        </Link>
       </div>
       <ProjectsList projects={projects || []} />
     </div>

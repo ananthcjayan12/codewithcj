@@ -1,11 +1,10 @@
-import { HeroSection } from "@/components/sections/hero"
+import { ProjectsSection } from "@/components/sections/projects"
 
-export const runtime = "edge"
-
-export default function Home() {
+export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between">
-      <HeroSection />
+    <main>
+      <ProjectsSection />
+      {/* Other sections */}
     </main>
   )
 }
