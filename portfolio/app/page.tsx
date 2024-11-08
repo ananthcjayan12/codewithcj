@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { container, pageWrapper } from "@/lib/utils"
+import { unstable_noStore } from 'next/cache'
 
 // Create a Supabase client with service role
 const supabase = createClient(
@@ -18,8 +19,10 @@ const supabase = createClient(
 )
 
 export default async function HomePage() {
-  // Add debug logs
-  console.log('Fetching home content...')
+  // Disable caching
+  unstable_noStore()
+
+  // Fetch home content
   const { data: home, error } = await supabase
     .from('home_content')
     .select('*')

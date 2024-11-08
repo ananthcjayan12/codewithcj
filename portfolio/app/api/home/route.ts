@@ -16,38 +16,19 @@ const supabase = createClient(
 // Helper function to verify API key
 const verifyApiKey = (request: Request) => {
   const apiKey = request.headers.get('x-api-key')
-  return apiKey === process.env.API_SECRET_KEY
+  return apiKey === 'portfolio-api-key-123'
 }
 
 export async function GET() {
   try {
-    // Get home content
-    const { data: homeContent, error: homeError } = await supabase
+    const { data, error } = await supabase
       .from('home_content')
       .select('*')
       .single()
 
-    if (homeError) throw homeError
+    if (error) throw error
 
-    // If featured projects exist, fetch their details
-    if (homeContent?.featured_project_ids?.length > 0) {
-      const { data: featuredProjects, error: projectsError } = await supabase
-        .from('projects')
-        .select('*')
-        .in('id', homeContent.featured_project_ids)
-        .eq('status', 'published')
-        .order('display_order', { ascending: true })
-
-      if (projectsError) throw projectsError
-
-      // Combine home content with featured projects
-      return NextResponse.json({
-        ...homeContent,
-        featured_projects: featuredProjects
-      })
-    }
-
-    return NextResponse.json(homeContent)
+    return NextResponse.json(data)
   } catch (error) {
     console.error('Error fetching home content:', error)
     return new NextResponse(
@@ -60,31 +41,12 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     if (!verifyApiKey(request)) {
+      console.error('API key verification failed')
       return new NextResponse('Unauthorized', { status: 401 })
     }
 
     const body = await request.json()
-
-    // Validate featured project IDs exist
-    if (body.featured_project_ids?.length > 0) {
-      const { data: projects, error: projectsError } = await supabase
-        .from('projects')
-        .select('id')
-        .in('id', body.featured_project_ids)
-
-      if (projectsError) throw projectsError
-
-      // Check if all project IDs are valid
-      const validIds = projects.map(p => p.id)
-      const invalidIds = body.featured_project_ids.filter((id: string) => !validIds.includes(id))
-
-      if (invalidIds.length > 0) {
-        return new NextResponse(
-          JSON.stringify({ error: `Invalid project IDs: ${invalidIds.join(', ')}` }), 
-          { status: 400 }
-        )
-      }
-    }
+    console.log('Updating home content with:', body) // Debug log
 
     const { data, error } = await supabase
       .from('home_content')
@@ -95,8 +57,12 @@ export async function PUT(request: Request) {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('Supabase error:', error) // Debug log
+      throw error
+    }
 
+    console.log('Updated home content:', data) // Debug log
     return NextResponse.json(data)
   } catch (error) {
     console.error('Error updating home content:', error)

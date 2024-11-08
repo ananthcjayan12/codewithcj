@@ -1,8 +1,12 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { HomeForm } from "@/components/admin/home/home-form"
+import { unstable_noStore } from 'next/cache'
 
 export default async function HomeEditorPage() {
+  // Disable caching
+  unstable_noStore()
+  
   const supabase = createServerComponentClient({ cookies })
   
   const { data: home, error } = await supabase
@@ -10,13 +14,9 @@ export default async function HomeEditorPage() {
     .select('*')
     .single()
 
-  console.log('Home content:', home)
-  console.log('Error if any:', error)
-
-  const { data: projects } = await supabase
-    .from('projects')
-    .select('id, title, status')
-    .order('display_order', { ascending: true })
+  if (error) {
+    console.error('Error fetching home content:', error)
+  }
 
   return (
     <div className="space-y-6">
@@ -26,7 +26,7 @@ export default async function HomeEditorPage() {
           Manage your home page content
         </p>
       </div>
-      <HomeForm initialData={home} projects={projects || []} />
+      <HomeForm initialData={home || undefined} />
     </div>
   )
 } 
