@@ -71,11 +71,42 @@ CREATE TABLE media (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Settings table
+-- Settings table (updated)
 CREATE TABLE settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     key TEXT NOT NULL UNIQUE,
     value JSONB NOT NULL,
+    site_title TEXT,
+    meta_description TEXT,
+    keywords TEXT[],
+    social_links JSONB DEFAULT '{}',
+    contact_email TEXT,
+    contact_phone TEXT,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- About content table (new)
+CREATE TABLE about_content (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title TEXT NOT NULL,
+    bio TEXT NOT NULL,
+    skills JSONB NOT NULL DEFAULT '{}',
+    experience JSONB NOT NULL DEFAULT '[]',
+    education JSONB NOT NULL DEFAULT '[]',
+    achievements TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Home content table (new)
+CREATE TABLE home_content (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    hero_title TEXT NOT NULL,
+    hero_subtitle TEXT,
+    featured_project_ids TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
+    cta_text TEXT,
+    cta_link TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -100,12 +131,24 @@ CREATE TRIGGER set_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION handle_updated_at();
 
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON about_content
+    FOR EACH ROW
+    EXECUTE FUNCTION handle_updated_at();
+
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON home_content
+    FOR EACH ROW
+    EXECUTE FUNCTION handle_updated_at();
+
 -- Row Level Security Policies
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE media ENABLE ROW LEVEL SECURITY;
 ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE about_content ENABLE ROW LEVEL SECURITY;
+ALTER TABLE home_content ENABLE ROW LEVEL SECURITY;
 
 -- Profiles policies
 CREATE POLICY "Public profiles are viewable by everyone"
@@ -152,12 +195,31 @@ CREATE POLICY "Settings are editable by admins"
     ON settings FOR ALL
     USING (auth.role() = 'authenticated');
 
+-- About content policies
+CREATE POLICY "About content is viewable by everyone"
+    ON about_content FOR SELECT
+    USING (true);
+
+CREATE POLICY "About content is editable by admins"
+    ON about_content FOR ALL
+    USING (auth.role() = 'authenticated');
+
+-- Home content policies
+CREATE POLICY "Home content is viewable by everyone"
+    ON home_content FOR SELECT
+    USING (true);
+
+CREATE POLICY "Home content is editable by admins"
+    ON home_content FOR ALL
+    USING (auth.role() = 'authenticated');
+
 -- Create optimized indexes for better query performance
 CREATE INDEX IF NOT EXISTS projects_slug_status_idx ON projects(slug, status);
 CREATE INDEX IF NOT EXISTS projects_status_display_order_idx ON projects(status, display_order);
 CREATE INDEX IF NOT EXISTS projects_category_idx ON projects(category);
 CREATE INDEX IF NOT EXISTS blog_posts_slug_idx ON blog_posts(slug);
 CREATE INDEX IF NOT EXISTS blog_posts_status_idx ON blog_posts(status);
+CREATE INDEX IF NOT EXISTS home_content_featured_projects_idx ON home_content USING GIN (featured_project_ids);
 
 -- Drop redundant single-column indexes since we have combined ones
 DROP INDEX IF EXISTS projects_status_idx;

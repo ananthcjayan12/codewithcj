@@ -10,7 +10,9 @@ import {
   FileText, 
   Image, 
   Settings,
-  LogOut 
+  LogOut,
+  Home,
+  Info
 } from "lucide-react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
@@ -19,6 +21,8 @@ const navigation = [
   { name: "Profile", href: "/admin/profile", icon: User },
   { name: "Projects", href: "/admin/projects", icon: FolderKanban },
   { name: "Blog Posts", href: "/admin/blog", icon: FileText },
+  { name: "Home Page", href: "/admin/home", icon: Home },
+  { name: "About Page", href: "/admin/about", icon: Info },
   { name: "Media", href: "/admin/media", icon: Image },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]

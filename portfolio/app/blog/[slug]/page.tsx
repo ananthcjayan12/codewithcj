@@ -23,13 +23,23 @@ interface Props {
   }
 }
 
+interface BlogPost {
+  id: string
+  title: string
+  excerpt: string
+  content: string
+  tags: string[]
+  created_at: string
+  slug: string
+}
+
 export default async function BlogPostPage({ params }: Props) {
   const { data: post } = await supabase
     .from('blog_posts')
     .select('*')
     .eq('slug', params.slug)
     .eq('status', 'published')
-    .single()
+    .single() as { data: BlogPost | null }
 
   if (!post) {
     notFound()

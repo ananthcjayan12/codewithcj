@@ -1,40 +1,92 @@
-export default function AboutLoading() {
+import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent } from "@/components/ui/card"
+import { container, pageWrapper } from "@/lib/utils"
+
+export default function Loading() {
   return (
-    <div className="container py-6 md:py-12">
-      <div className="space-y-12 animate-pulse">
-        {/* Professional Summary Loading */}
-        <div className="space-y-4">
-          <div className="h-10 w-40 bg-muted rounded" />
-          <div className="h-20 w-full max-w-2xl bg-muted rounded" />
-        </div>
-
-        {/* Skills Loading */}
-        <div className="space-y-4">
-          <div className="h-8 w-48 bg-muted rounded" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="space-y-2">
-                <div className="h-6 w-32 bg-muted rounded" />
-                <div className="space-y-2">
-                  {[...Array(5)].map((_, j) => (
-                    <div key={j} className="h-4 w-full bg-muted rounded" />
-                  ))}
-                </div>
-              </div>
-            ))}
+    <main className={pageWrapper}>
+      <div className={container}>
+        <div className="mx-auto max-w-4xl space-y-12">
+          {/* Header */}
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-24 w-full" />
           </div>
-        </div>
 
-        {/* Certifications Loading */}
-        <div className="space-y-4">
-          <div className="h-8 w-48 bg-muted rounded" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-24 bg-muted rounded" />
-            ))}
+          {/* Skills */}
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-32" />
+            <div className="grid gap-6 md:grid-cols-3">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i}>
+                  <CardContent className="pt-6">
+                    <Skeleton className="h-6 w-32 mb-4" />
+                    <div className="flex flex-wrap gap-2">
+                      {[...Array(4)].map((_, j) => (
+                        <Skeleton key={j} className="h-6 w-20" />
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Experience */}
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-40" />
+            <div className="grid gap-6">
+              {[...Array(2)].map((_, i) => (
+                <Card key={i}>
+                  <CardContent className="pt-6 space-y-4">
+                    <div className="flex justify-between">
+                      <div className="space-y-2">
+                        <Skeleton className="h-6 w-48" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <Skeleton className="h-20 w-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Education */}
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-36" />
+            <div className="grid gap-6">
+              {[...Array(2)].map((_, i) => (
+                <Card key={i}>
+                  <CardContent className="pt-6 space-y-4">
+                    <div className="flex justify-between">
+                      <div className="space-y-2">
+                        <Skeleton className="h-6 w-48" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                    <Skeleton className="h-16 w-full" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Achievements */}
+          <div className="space-y-6">
+            <Skeleton className="h-8 w-40" />
+            <Card>
+              <CardContent className="pt-6 space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <Skeleton key={i} className="h-4 w-full" />
+                ))}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 } 
