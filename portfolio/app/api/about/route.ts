@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { headers } from 'next/headers'
 
 // Create a Supabase client with service role
 const supabase = createClient(
@@ -14,8 +15,9 @@ const supabase = createClient(
 )
 
 // Helper function to verify API key
-const verifyApiKey = (request: Request) => {
-  const apiKey = request.headers.get('x-api-key')
+const verifyApiKey = () => {
+  const headersList = headers()
+  const apiKey = headersList.get('x-api-key')
   return apiKey === process.env.API_SECRET_KEY
 }
 
@@ -40,7 +42,7 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    if (!verifyApiKey(request)) {
+    if (!verifyApiKey()) {
       return new NextResponse('Unauthorized', { status: 401 })
     }
 

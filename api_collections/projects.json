@@ -220,6 +220,80 @@
           }
         }
       ]
+    },
+    {
+      "name": "Home",
+      "item": [
+        {
+          "name": "Get Home Content",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/home",
+              "host": ["{{base_url}}"],
+              "path": ["api", "home"]
+            }
+          }
+        },
+        {
+          "name": "Update Home Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"role\": \"Full Stack Developer\",\n    \"summary\": \"Building innovative solutions with modern technologies\",\n    \"long_summary\": \"Experienced developer specializing in...\",\n    \"avatar_url\": \"https://example.com/avatar.jpg\",\n    \"social_links\": {\n        \"github\": \"https://github.com/username\",\n        \"twitter\": \"https://twitter.com/username\",\n        \"linkedin\": \"https://linkedin.com/in/username\"\n    }\n}"
+            },
+            "url": "{{base_url}}/api/home"
+          }
+        }
+      ]
+    },
+    {
+      "name": "About",
+      "item": [
+        {
+          "name": "Get About Content",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/about",
+              "host": ["{{base_url}}"],
+              "path": ["api", "about"]
+            }
+          }
+        },
+        {
+          "name": "Update About Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"About Me\",\n    \"bio\": \"Full stack developer with expertise in...\",\n    \"skills\": {\n        \"technical\": [\"React\", \"Node.js\", \"TypeScript\", \"Python\"],\n        \"soft\": [\"Problem Solving\", \"Team Leadership\"],\n        \"tools\": [\"Git\", \"Docker\", \"AWS\"]\n    },\n    \"experience\": [\n        {\n            \"title\": \"Senior Developer\",\n            \"company\": \"Tech Corp\",\n            \"duration\": \"2020 - Present\",\n            \"description\": \"Leading development of...\"\n        }\n    ],\n    \"education\": [\n        {\n            \"degree\": \"BSc Computer Science\",\n            \"institution\": \"University Name\",\n            \"year\": \"2019\",\n            \"description\": \"Graduated with honors\"\n        }\n    ],\n    \"achievements\": [\n        \"AWS Certified Solutions Architect\",\n        \"Google Cloud Professional Developer\"\n    ]\n}"
+            },
+            "url": "{{base_url}}/api/about"
+          }
+        }
+      ]
     }
   ],
   "event": [

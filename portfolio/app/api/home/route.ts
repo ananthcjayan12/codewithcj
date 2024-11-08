@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { headers } from 'next/headers'
 
 // Create a Supabase client with service role
 const supabase = createClient(
@@ -14,9 +15,10 @@ const supabase = createClient(
 )
 
 // Helper function to verify API key
-const verifyApiKey = (request: Request) => {
-  const apiKey = request.headers.get('x-api-key')
-  return apiKey === 'portfolio-api-key-123'
+const verifyApiKey = () => {
+  const headersList = headers()
+  const apiKey = headersList.get('x-api-key')
+  return apiKey === process.env.API_SECRET_KEY
 }
 
 export async function GET() {
@@ -40,13 +42,11 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    if (!verifyApiKey(request)) {
-      console.error('API key verification failed')
+    if (!verifyApiKey()) {
       return new NextResponse('Unauthorized', { status: 401 })
     }
 
     const body = await request.json()
-    console.log('Updating home content with:', body) // Debug log
 
     const { data, error } = await supabase
       .from('home_content')
@@ -57,12 +57,8 @@ export async function PUT(request: Request) {
       .select()
       .single()
 
-    if (error) {
-      console.error('Supabase error:', error) // Debug log
-      throw error
-    }
+    if (error) throw error
 
-    console.log('Updated home content:', data) // Debug log
     return NextResponse.json(data)
   } catch (error) {
     console.error('Error updating home content:', error)
