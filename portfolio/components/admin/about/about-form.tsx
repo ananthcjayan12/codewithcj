@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form"
 import { toast } from "sonner"
 import { aboutFormSchema, type AboutFormValues } from "@/lib/validations/about"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 interface AboutFormProps {
   initialData?: AboutFormValues
@@ -27,44 +28,66 @@ interface AboutFormProps {
 export function AboutForm({ initialData }: AboutFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const supabase = createClientComponentClient()
 
   const form = useForm<AboutFormValues>({
     resolver: zodResolver(aboutFormSchema),
-    defaultValues: initialData || {
-      title: "",
-      bio: "",
-      skills: {
+    defaultValues: {
+      id: initialData?.id,
+      title: initialData?.title || "",
+      bio: initialData?.bio || "",
+      skills: initialData?.skills || {
         technical: [],
         soft: [],
         tools: []
       },
-      experience: [],
-      education: [],
-      achievements: []
+      experience: initialData?.experience || [],
+      education: initialData?.education || [],
+      achievements: initialData?.achievements || []
     }
   })
 
-  const onSubmit = async (data: AboutFormValues) => {
-    setIsLoading(true)
+  const onSubmit = async (values: AboutFormValues) => {
     try {
-      const response = await fetch('/api/about', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
-        },
-        body: JSON.stringify(data),
-      })
+      setIsLoading(true)
+      console.log('Submitting values:', values)
 
-      if (!response.ok) {
-        throw new Error('Failed to save about content')
+      // First, check if a record exists
+      const { data: existingRecord, error: fetchError } = await supabase
+        .from('about_content')
+        .select('id')
+        .single()
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        throw fetchError
       }
 
-      toast.success('About content updated successfully')
+      const { data, error } = await supabase
+        .from('about_content')
+        .upsert({
+          id: existingRecord?.id || initialData?.id,
+          ...values,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'id'
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Supabase error:', error)
+        throw error
+      }
+
+      console.log('Successfully updated data:', data)
+      toast.success('Changes saved successfully')
+      
+      // Force a cache revalidation and refresh
       router.refresh()
+      window.location.reload()
     } catch (error) {
-      console.error('Error saving about content:', error)
-      toast.error('Failed to save about content')
+      console.error('Error in onSubmit:', error)
+      toast.error('Failed to save changes')
     } finally {
       setIsLoading(false)
     }

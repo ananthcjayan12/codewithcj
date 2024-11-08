@@ -1,10 +1,20 @@
 import { createClient } from '@supabase/supabase-js'
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { container, pageWrapper } from "@/lib/utils"
-import { Briefcase, GraduationCap, Trophy } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import { 
+  GraduationCap, 
+  Trophy, 
+  Briefcase,
+  Code2,
+  Building,
+  CalendarDays,
+  ScrollText
+} from "lucide-react"
+import { unstable_noStore } from 'next/cache'
 
-// Create a Supabase client with service role
+// Create a Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -17,118 +27,96 @@ const supabase = createClient(
 )
 
 export default async function AboutPage() {
+  unstable_noStore()
+  
   const { data: about } = await supabase
     .from('about_content')
     .select('*')
     .single()
 
   if (!about) {
-    return (
-      <main className={pageWrapper}>
-        <div className={container}>
-          <div className="mx-auto max-w-4xl space-y-12">
-            <div className="space-y-4">
-              <h1 className="text-4xl font-bold">About</h1>
-              <p className="text-lg text-muted-foreground">
-                Content coming soon... Please set up your about page in the admin panel.
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
-    )
+    return null
   }
 
   return (
     <main className={pageWrapper}>
       <div className={container}>
-        <div className="mx-auto max-w-4xl space-y-12">
-          {/* Header */}
-          <div className="space-y-4">
-            <h1 className="text-4xl font-bold">{about.title}</h1>
-            <p className="text-lg text-muted-foreground whitespace-pre-wrap">
-              {about.bio}
-            </p>
-          </div>
-
-          {/* Skills */}
-          {about.skills && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-semibold">Skills</h2>
-              <div className="grid gap-6 md:grid-cols-3">
-                {/* Technical Skills */}
-                {about.skills.technical?.length > 0 && (
-                  <Card>
-                    <CardContent className="pt-6">
-                      <h3 className="font-medium mb-4">Technical Skills</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {about.skills.technical.map((skill: string) => (
-                          <Badge key={skill} variant="secondary">
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Soft Skills */}
-                {about.skills.soft?.length > 0 && (
-                  <Card>
-                    <CardContent className="pt-6">
-                      <h3 className="font-medium mb-4">Soft Skills</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {about.skills.soft.map((skill: string) => (
-                          <Badge key={skill} variant="secondary">
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Tools */}
-                {about.skills.tools?.length > 0 && (
-                  <Card>
-                    <CardContent className="pt-6">
-                      <h3 className="font-medium mb-4">Tools & Technologies</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {about.skills.tools.map((tool: string) => (
-                          <Badge key={tool} variant="secondary">
-                            {tool}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
+        <div className="mx-auto max-w-4xl space-y-16 py-16">
+          {/* About Section */}
+          <section>
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold tracking-tight">About Me</h1>
+              <p className="text-muted-foreground">Get to know more about my background and expertise</p>
             </div>
-          )}
+            <Separator className="my-8" />
+            <div className="prose dark:prose-invert max-w-none">
+              {about.bio}
+            </div>
+          </section>
 
-          {/* Experience */}
-          {about.experience?.length > 0 && (
-            <div className="space-y-6">
+          {/* Skills Section */}
+          <section>
+            <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Briefcase className="h-5 w-5" />
-                <h2 className="text-2xl font-semibold">Experience</h2>
+                <Code2 className="h-5 w-5 text-primary" />
+                <h2 className="text-2xl font-semibold tracking-tight">Technical Skills</h2>
               </div>
-              <div className="grid gap-6">
+              <p className="text-muted-foreground">Technologies and tools I work with</p>
+            </div>
+            <div className="mt-6 grid gap-4">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex flex-wrap gap-2">
+                    {about.skills.technical.map((skill: string) => (
+                      <Badge 
+                        key={skill} 
+                        variant="secondary"
+                        className="px-3 py-1.5 text-sm font-medium"
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
+
+          {/* Experience Section */}
+          {about.experience?.length > 0 && (
+            <section>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Briefcase className="h-5 w-5 text-primary" />
+                  <h2 className="text-2xl font-semibold tracking-tight">Professional Experience</h2>
+                </div>
+                <p className="text-muted-foreground">My journey in the tech industry</p>
+              </div>
+              <div className="mt-6 grid gap-6">
                 {about.experience.map((exp: any, index: number) => (
                   <Card key={index}>
-                    <CardContent className="pt-6">
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-medium">{exp.title}</h3>
-                            <p className="text-muted-foreground">{exp.company}</p>
-                          </div>
-                          <span className="text-sm text-muted-foreground">
-                            {exp.duration}
-                          </span>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <CardTitle className="flex items-center gap-2">
+                            <Building className="h-4 w-4 text-muted-foreground" />
+                            {exp.title}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-2">
+                            {exp.company}
+                            <span className="text-xs">•</span>
+                            <span className="flex items-center gap-1">
+                              <CalendarDays className="h-3 w-3" />
+                              {exp.duration}
+                            </span>
+                          </CardDescription>
                         </div>
-                        <p className="text-sm whitespace-pre-wrap">
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-start gap-2">
+                        <ScrollText className="h-4 w-4 text-muted-foreground mt-1 flex-shrink-0" />
+                        <p className="text-sm text-muted-foreground leading-relaxed">
                           {exp.description}
                         </p>
                       </div>
@@ -136,62 +124,78 @@ export default async function AboutPage() {
                   </Card>
                 ))}
               </div>
-            </div>
+            </section>
           )}
 
-          {/* Education */}
+          {/* Education Section */}
           {about.education?.length > 0 && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <GraduationCap className="h-5 w-5" />
-                <h2 className="text-2xl font-semibold">Education</h2>
+            <section>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="h-5 w-5 text-primary" />
+                  <h2 className="text-2xl font-semibold tracking-tight">Education</h2>
+                </div>
+                <p className="text-muted-foreground">Academic background and qualifications</p>
               </div>
-              <div className="grid gap-6">
+              <div className="mt-6 grid gap-6">
                 {about.education.map((edu: any, index: number) => (
                   <Card key={index}>
-                    <CardContent className="pt-6">
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-medium">{edu.degree}</h3>
-                            <p className="text-muted-foreground">{edu.institution}</p>
-                          </div>
-                          <span className="text-sm text-muted-foreground">
-                            {edu.year}
-                          </span>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-1">
+                          <CardTitle>{edu.degree}</CardTitle>
+                          <CardDescription className="flex items-center gap-2">
+                            {edu.institution}
+                            <span className="text-xs">•</span>
+                            <span className="flex items-center gap-1">
+                              <CalendarDays className="h-3 w-3" />
+                              {edu.year}
+                            </span>
+                          </CardDescription>
                         </div>
-                        {edu.description && (
-                          <p className="text-sm whitespace-pre-wrap">
+                      </div>
+                    </CardHeader>
+                    {edu.description && (
+                      <CardContent>
+                        <div className="flex items-start gap-2">
+                          <ScrollText className="h-4 w-4 text-muted-foreground mt-1 flex-shrink-0" />
+                          <p className="text-sm text-muted-foreground leading-relaxed">
                             {edu.description}
                           </p>
-                        )}
-                      </div>
-                    </CardContent>
+                        </div>
+                      </CardContent>
+                    )}
                   </Card>
                 ))}
               </div>
-            </div>
+            </section>
           )}
 
-          {/* Achievements */}
+          {/* Certifications Section */}
           {about.achievements?.length > 0 && (
-            <div className="space-y-6">
-              <div className="flex items-center gap-2">
-                <Trophy className="h-5 w-5" />
-                <h2 className="text-2xl font-semibold">Achievements</h2>
+            <section>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-primary" />
+                  <h2 className="text-2xl font-semibold tracking-tight">Certifications</h2>
+                </div>
+                <p className="text-muted-foreground">Professional certifications and achievements</p>
               </div>
-              <Card>
-                <CardContent className="pt-6">
-                  <ul className="list-disc list-inside space-y-2">
-                    {about.achievements.map((achievement: string, index: number) => (
-                      <li key={index} className="text-muted-foreground">
-                        {achievement}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {about.achievements.map((achievement: string, index: number) => (
+                  <Card key={index}>
+                    <CardHeader>
+                      <div className="flex items-start gap-3">
+                        <Trophy className="h-4 w-4 text-primary mt-1" />
+                        <CardTitle className="text-base font-medium leading-tight">
+                          {achievement}
+                        </CardTitle>
+                      </div>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            </section>
           )}
         </div>
       </div>
