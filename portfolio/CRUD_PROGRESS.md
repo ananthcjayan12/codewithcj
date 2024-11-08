@@ -78,4 +78,4 @@
 4. Performance:
    - Add proper caching
    - Add optimistic updates
-   - Add loading states 
+   - Add loading states

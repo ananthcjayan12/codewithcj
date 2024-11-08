@@ -16,39 +16,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
-import { homeFormSchema, type HomeFormValues } from "@/lib/validations/home"
-
-interface Project {
-  id: string
-  title: string
-  status: 'draft' | 'published'
-}
+import { homeFormSchema, type HomeFormValues, uploadAvatar } from "@/lib/validations/home"
+import { ImageUpload } from "@/components/admin/projects/image-upload"
 
 interface HomeFormProps {
   initialData?: HomeFormValues
-  projects: Project[]
 }
 
-export function HomeForm({ initialData, projects }: HomeFormProps) {
+export function HomeForm({ initialData }: HomeFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<HomeFormValues>({
     resolver: zodResolver(homeFormSchema),
     defaultValues: initialData || {
-      hero_title: "",
-      hero_subtitle: "",
-      featured_project_ids: [],
-      cta_text: "",
-      cta_link: "",
+      name: "",
+      role: "",
+      summary: "",
+      long_summary: "",
+      avatar_url: "",
+      social_links: {}
     }
   })
 
@@ -78,101 +67,127 @@ export function HomeForm({ initialData, projects }: HomeFormProps) {
     }
   }
 
-  const publishedProjects = projects.filter(project => project.status === 'published')
+  const handleImageUpload = async (file: File) => {
+    const result = await uploadAvatar(file)
+    if (result.error) {
+      toast.error(result.error)
+    } else {
+      form.setValue('avatar_url', result.url)
+    }
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card>
           <CardContent className="pt-6 space-y-6">
-            {/* Hero Title */}
+            {/* Avatar */}
             <FormField
               control={form.control}
-              name="hero_title"
+              name="avatar_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hero Title</FormLabel>
+                  <FormLabel>Profile Picture</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter hero title" />
+                    <ImageUpload
+                      currentImage={field.value}
+                      onUploadComplete={(url) => field.onChange(url)}
+                      label="Profile Picture"
+                      bucket="avatars"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Hero Subtitle */}
+            {/* Name */}
             <FormField
               control={form.control}
-              name="hero_subtitle"
+              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hero Subtitle</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter hero subtitle" />
+                    <Input {...field} placeholder="Your name" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Featured Projects */}
+            {/* Role */}
             <FormField
               control={form.control}
-              name="featured_project_ids"
+              name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Featured Projects</FormLabel>
-                  <Select
-                    value={field.value.join(',')}
-                    onValueChange={(value) => field.onChange(value ? value.split(',') : [])}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select featured projects" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {publishedProjects.map((project) => (
-                        <SelectItem key={project.id} value={project.id}>
-                          {project.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* CTA Text */}
-            <FormField
-              control={form.control}
-              name="cta_text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Call to Action Text</FormLabel>
+                  <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Enter CTA text" />
+                    <Input {...field} placeholder="Your role" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* CTA Link */}
+            {/* Summary */}
             <FormField
               control={form.control}
-              name="cta_link"
+              name="summary"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Call to Action Link</FormLabel>
+                  <FormLabel>Summary</FormLabel>
                   <FormControl>
-                    <Input {...field} type="url" placeholder="Enter CTA link" />
+                    <Textarea {...field} placeholder="Brief summary about yourself" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            {/* Long Summary */}
+            <FormField
+              control={form.control}
+              name="long_summary"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Detailed Summary</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} placeholder="More detailed description about yourself" rows={5} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Social Links */}
+            <div className="space-y-4">
+              <FormLabel>Social Links</FormLabel>
+              <div className="grid gap-4">
+                {['github', 'linkedin', 'twitter'].map((platform) => (
+                  <FormField
+                    key={platform}
+                    control={form.control}
+                    name={`social_links.${platform}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="capitalize">{platform}</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            type="url" 
+                            placeholder={`Your ${platform} URL`}
+                            value={field.value || ''}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
           </CardContent>
         </Card>
 

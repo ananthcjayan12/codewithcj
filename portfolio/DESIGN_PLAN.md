@@ -3,4 +3,4 @@
 ## Database Schema (Already Set)
 Using existing schema from schema.sql:
 
-1. Projects Table 
+1. Projects Table

@@ -5,10 +5,13 @@ import { HomeForm } from "@/components/admin/home/home-form"
 export default async function HomeEditorPage() {
   const supabase = createServerComponentClient({ cookies })
   
-  const { data: home } = await supabase
+  const { data: home, error } = await supabase
     .from('home_content')
     .select('*')
     .single()
+
+  console.log('Home content:', home)
+  console.log('Error if any:', error)
 
   const { data: projects } = await supabase
     .from('projects')

@@ -52,4 +52,4 @@ export const adminNav = [
   },
 ] as const
 
-export type AdminNav = typeof adminNav 
+export type AdminNav = typeof adminNav

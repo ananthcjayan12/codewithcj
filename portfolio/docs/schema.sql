@@ -98,17 +98,62 @@ CREATE TABLE about_content (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Home content table (new)
+-- Update home_content table to store avatar image path
+DROP TABLE IF EXISTS home_content;
+
 CREATE TABLE home_content (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    hero_title TEXT NOT NULL,
-    hero_subtitle TEXT,
-    featured_project_ids TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
-    cta_text TEXT,
-    cta_link TEXT,
+    name TEXT NOT NULL,
+    role TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    long_summary TEXT,
+    avatar_url TEXT, -- This will store the Supabase Storage URL
+    social_links JSONB NOT NULL DEFAULT '{}',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Add trigger for updated_at
+CREATE TRIGGER set_updated_at
+    BEFORE UPDATE ON home_content
+    FOR EACH ROW
+    EXECUTE FUNCTION handle_updated_at();
+
+-- Add RLS policies
+ALTER TABLE home_content ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Home content is viewable by everyone"
+    ON home_content FOR SELECT
+    USING (true);
+
+CREATE POLICY "Home content is editable by admins"
+    ON home_content FOR ALL
+    USING (auth.role() = 'authenticated');
+
+-- Create bucket for avatar images if it doesn't exist
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Allow public access to avatars bucket
+CREATE POLICY "Avatar images are publicly accessible"
+    ON storage.objects FOR SELECT
+    USING (bucket_id = 'avatars');
+
+-- Allow authenticated users to upload avatars
+CREATE POLICY "Authenticated users can upload avatars"
+    ON storage.objects FOR INSERT
+    WITH CHECK (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+-- Allow authenticated users to update avatars
+CREATE POLICY "Authenticated users can update avatars"
+    ON storage.objects FOR UPDATE
+    USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
+
+-- Allow authenticated users to delete avatars
+CREATE POLICY "Authenticated users can delete avatars"
+    ON storage.objects FOR DELETE
+    USING (bucket_id = 'avatars' AND auth.role() = 'authenticated');
 
 -- Create triggers for updated_at
 CREATE TRIGGER set_updated_at
@@ -133,11 +178,6 @@ CREATE TRIGGER set_updated_at
 
 CREATE TRIGGER set_updated_at
     BEFORE UPDATE ON about_content
-    FOR EACH ROW
-    EXECUTE FUNCTION handle_updated_at();
-
-CREATE TRIGGER set_updated_at
-    BEFORE UPDATE ON home_content
     FOR EACH ROW
     EXECUTE FUNCTION handle_updated_at();
 
@@ -202,15 +242,6 @@ CREATE POLICY "About content is viewable by everyone"
 
 CREATE POLICY "About content is editable by admins"
     ON about_content FOR ALL
-    USING (auth.role() = 'authenticated');
-
--- Home content policies
-CREATE POLICY "Home content is viewable by everyone"
-    ON home_content FOR SELECT
-    USING (true);
-
-CREATE POLICY "Home content is editable by admins"
-    ON home_content FOR ALL
     USING (auth.role() = 'authenticated');
 
 -- Create optimized indexes for better query performance

@@ -30,6 +30,7 @@
    - [x] Home content table
    - [x] RLS policies
    - [x] Indexes
+   - [x] Storage buckets and policies
 
 3. Blog UI Components
    - [x] Blog posts list view
@@ -62,10 +63,11 @@
    - [x] Admin Components
      - [x] Home form validation
      - [x] Home form component
-     - [x] Featured projects selector
+     - [x] Avatar image upload
+     - [x] Social links editor
    - [x] Public Page
      - [x] Hero section
-     - [x] Featured projects grid
+     - [x] Profile section
      - [x] Dynamic content
      - [x] Loading states
 
@@ -75,7 +77,6 @@
    - [ ] Settings editor
    - [ ] Site metadata
    - [ ] Contact information
-   - [ ] Social links
 
 2. Features & Enhancements
    - [ ] Image optimization

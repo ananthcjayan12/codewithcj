@@ -12,9 +12,15 @@ interface ImageUploadProps {
   onUploadComplete: (url: string) => void
   currentImage?: string
   label?: string
+  bucket?: string
 }
 
-export function ImageUpload({ onUploadComplete, currentImage, label = "Image" }: ImageUploadProps) {
+export function ImageUpload({ 
+  onUploadComplete, 
+  currentImage, 
+  label = "Image",
+  bucket = "avatars"
+}: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [preview, setPreview] = useState<string | null>(currentImage || null)
@@ -41,12 +47,12 @@ export function ImageUpload({ onUploadComplete, currentImage, label = "Image" }:
       // Generate a unique file name
       const fileExt = file.name.split('.').pop()
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
-      const filePath = `projects/${fileName}`
+      const filePath = fileName
 
       // Upload to Supabase Storage
       const { error: uploadError, data } = await supabase
         .storage
-        .from('images')
+        .from(bucket)
         .upload(filePath, file, {
           cacheControl: '3600',
           upsert: false
@@ -57,7 +63,7 @@ export function ImageUpload({ onUploadComplete, currentImage, label = "Image" }:
       // Get public URL
       const { data: { publicUrl } } = supabase
         .storage
-        .from('images')
+        .from(bucket)
         .getPublicUrl(filePath)
 
       // Set preview and notify parent
