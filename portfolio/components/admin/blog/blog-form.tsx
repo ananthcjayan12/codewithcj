@@ -31,6 +31,7 @@ import {
 import { toast } from "sonner"
 import { ImageUpload } from "./image-upload"
 import { blogFormSchema, type BlogFormValues } from "@/lib/validations/blog"
+import { BlogPreview } from "./blog-preview"
 
 interface BlogFormProps {
   initialData?: BlogFormValues & { id?: string }
@@ -292,19 +293,15 @@ export function BlogForm({ initialData }: BlogFormProps) {
         </div>
 
         {/* Preview Dialog */}
-        <Dialog open={showPreview} onOpenChange={setShowPreview}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>{form.getValues('title') || 'Untitled'}</DialogTitle>
-              <DialogDescription>
-                {form.getValues('excerpt')}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="prose dark:prose-invert max-w-none mt-4">
-              <div dangerouslySetInnerHTML={{ __html: form.getValues('content') }} />
-            </div>
-          </DialogContent>
-        </Dialog>
+        <BlogPreview
+          isOpen={showPreview}
+          onClose={() => setShowPreview(false)}
+          title={form.getValues('title')}
+          excerpt={form.getValues('excerpt')}
+          content={form.getValues('content')}
+          tags={form.getValues('tags')}
+          featuredImage={form.getValues('featured_image')}
+        />
       </form>
     </Form>
   )
