@@ -96,7 +96,7 @@ export default async function ProjectPage({ params }: Props) {
             <div className="space-y-4">
               <h1 className="text-4xl font-bold tracking-tight">{project.title}</h1>
               <div className="flex flex-wrap gap-2">
-                {project.tags?.map((tag) => (
+                {project.tags?.map((tag: string) => (
                   <Badge key={tag} variant="secondary">
                     {tag}
                   </Badge>
@@ -123,7 +123,7 @@ export default async function ProjectPage({ params }: Props) {
               <>
                 <h2>Key Features</h2>
                 <ul className="space-y-2">
-                  {project.key_features.map((feature, index) => (
+                  {project.key_features.map((feature: string, index: number) => (
                     <li key={index} className="flex items-start gap-2">
                       <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary/50 flex-shrink-0" />
                       <span>{feature}</span>

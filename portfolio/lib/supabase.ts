@@ -13,7 +13,17 @@ export async function getProjects() {
   try {
     const { data, error } = await supabase
       .from('projects')
-      .select('id, title, description, category, tags, slug, status')  // Select only needed fields
+      .select(`
+        id,
+        title,
+        description,
+        long_description,
+        icon,
+        tags,
+        category,
+        slug,
+        status
+      `)
       .eq('status', 'published')
       .order('display_order', { ascending: true })
     
