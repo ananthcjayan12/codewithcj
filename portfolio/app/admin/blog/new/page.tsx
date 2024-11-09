@@ -1,5 +1,7 @@
 import { BlogForm } from "@/components/admin/blog/blog-form"
 
+export const runtime = 'edge'
+
 export default function NewBlogPostPage() {
   return (
     <div className="space-y-6">

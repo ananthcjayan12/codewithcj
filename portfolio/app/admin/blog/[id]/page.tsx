@@ -10,6 +10,8 @@ interface Props {
   }
 }
 
+export const runtime = 'edge'
+
 export default async function EditBlogPostPage({ params }: Props) {
   // Disable caching for this page
   unstable_noStore()

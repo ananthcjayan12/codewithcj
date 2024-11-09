@@ -3,6 +3,8 @@ import { BlogPostsList } from "@/components/admin/blog/blog-posts-list"
 import Link from "next/link"
 import { unstable_noStore } from 'next/cache'
 
+export const runtime = 'edge'
+
 // Create a Supabase client with service role
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

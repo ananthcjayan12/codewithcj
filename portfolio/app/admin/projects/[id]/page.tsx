@@ -3,6 +3,8 @@ import { notFound } from "next/navigation"
 import { ProjectForm } from "@/components/admin/projects/project-form"
 import { unstable_noStore } from 'next/cache'
 
+export const runtime = 'edge'
+
 // Create a Supabase client with service role
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

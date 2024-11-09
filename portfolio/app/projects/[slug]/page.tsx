@@ -7,8 +7,8 @@ import { container, pageWrapper } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { cache } from 'react'
 
-// Remove edge runtime
-// export const runtime = "edge"
+
+export const runtime = "edge"
 
 // Use static rendering with ISR
 export const dynamic = 'force-static'
