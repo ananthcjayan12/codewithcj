@@ -300,7 +300,6 @@ export function BlogForm({ initialData }: BlogFormProps) {
           excerpt={form.getValues('excerpt')}
           content={form.getValues('content')}
           tags={form.getValues('tags')}
-          featuredImage={form.getValues('featured_image')}
         />
       </form>
     </Form>
