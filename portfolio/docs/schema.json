@@ -1,0 +1,275 @@
+{
+  "tables": {
+    "profiles": {
+      "description": "Stores user profile information",
+      "columns": {
+        "id": {
+          "type": "uuid",
+          "primary": true,
+          "default": "uuid_generate_v4()"
+        },
+        "name": {
+          "type": "text",
+          "nullable": false
+        },
+        "role": {
+          "type": "text",
+          "nullable": false
+        },
+        "summary": {
+          "type": "text",
+          "nullable": false
+        },
+        "long_summary": {
+          "type": "text",
+          "nullable": true
+        },
+        "contact": {
+          "type": "jsonb",
+          "nullable": false,
+          "example": {
+            "email": "string",
+            "phone": ["string"],
+            "location": "string"
+          }
+        },
+        "social_links": {
+          "type": "jsonb",
+          "nullable": false,
+          "example": {
+            "github": "string",
+            "linkedin": "string",
+            "twitter": "string"
+          }
+        },
+        "skills": {
+          "type": "jsonb",
+          "nullable": false,
+          "example": {
+            "frontend": ["string"],
+            "backend": ["string"],
+            "automation": ["string"],
+            "ai": ["string"]
+          }
+        },
+        "created_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        },
+        "updated_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        }
+      },
+      "policies": {
+        "select": "public can read",
+        "insert": "admins only",
+        "update": "admins only",
+        "delete": "admins only"
+      }
+    },
+    "projects": {
+      "description": "Stores project information",
+      "columns": {
+        "id": {
+          "type": "uuid",
+          "primary": true,
+          "default": "uuid_generate_v4()"
+        },
+        "title": {
+          "type": "text",
+          "nullable": false
+        },
+        "description": {
+          "type": "text",
+          "nullable": false
+        },
+        "long_description": {
+          "type": "text",
+          "nullable": false
+        },
+        "icon": {
+          "type": "text",
+          "nullable": false
+        },
+        "tags": {
+          "type": "text[]",
+          "nullable": false,
+          "default": "array[]::text[]"
+        },
+        "category": {
+          "type": "text",
+          "nullable": false
+        },
+        "slug": {
+          "type": "text",
+          "nullable": false,
+          "unique": true
+        },
+        "display_order": {
+          "type": "integer",
+          "nullable": false,
+          "default": 0
+        },
+        "status": {
+          "type": "text",
+          "nullable": false,
+          "default": "draft",
+          "check": "status IN ('draft', 'published')"
+        },
+        "created_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        },
+        "updated_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        }
+      },
+      "policies": {
+        "select": "public can read published",
+        "insert": "admins only",
+        "update": "admins only",
+        "delete": "admins only"
+      }
+    },
+    "blog_posts": {
+      "description": "Stores blog posts",
+      "columns": {
+        "id": {
+          "type": "uuid",
+          "primary": true,
+          "default": "uuid_generate_v4()"
+        },
+        "title": {
+          "type": "text",
+          "nullable": false
+        },
+        "slug": {
+          "type": "text",
+          "nullable": false,
+          "unique": true
+        },
+        "content": {
+          "type": "text",
+          "nullable": false
+        },
+        "excerpt": {
+          "type": "text",
+          "nullable": false
+        },
+        "featured_image": {
+          "type": "text",
+          "nullable": true
+        },
+        "tags": {
+          "type": "text[]",
+          "nullable": false,
+          "default": "array[]::text[]"
+        },
+        "status": {
+          "type": "text",
+          "nullable": false,
+          "default": "draft",
+          "check": "status IN ('draft', 'published')"
+        },
+        "created_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        },
+        "updated_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        }
+      },
+      "policies": {
+        "select": "public can read published",
+        "insert": "admins only",
+        "update": "admins only",
+        "delete": "admins only"
+      }
+    },
+    "media": {
+      "description": "Stores media files metadata",
+      "columns": {
+        "id": {
+          "type": "uuid",
+          "primary": true,
+          "default": "uuid_generate_v4()"
+        },
+        "filename": {
+          "type": "text",
+          "nullable": false
+        },
+        "path": {
+          "type": "text",
+          "nullable": false
+        },
+        "size": {
+          "type": "integer",
+          "nullable": false
+        },
+        "mime_type": {
+          "type": "text",
+          "nullable": false
+        },
+        "alt_text": {
+          "type": "text",
+          "nullable": true
+        },
+        "created_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        }
+      },
+      "policies": {
+        "select": "public can read",
+        "insert": "admins only",
+        "update": "admins only",
+        "delete": "admins only"
+      }
+    },
+    "settings": {
+      "description": "Stores site-wide settings",
+      "columns": {
+        "id": {
+          "type": "uuid",
+          "primary": true,
+          "default": "uuid_generate_v4()"
+        },
+        "key": {
+          "type": "text",
+          "nullable": false,
+          "unique": true
+        },
+        "value": {
+          "type": "jsonb",
+          "nullable": false
+        },
+        "updated_at": {
+          "type": "timestamp with time zone",
+          "default": "now()"
+        }
+      },
+      "policies": {
+        "select": "public can read",
+        "insert": "admins only",
+        "update": "admins only",
+        "delete": "admins only"
+      }
+    }
+  },
+  "functions": {
+    "handle_updated_at": {
+      "description": "Updates the updated_at timestamp",
+      "returns": "trigger"
+    }
+  },
+  "triggers": {
+    "set_updated_at": {
+      "on": ["profiles", "projects", "blog_posts", "settings"],
+      "function": "handle_updated_at",
+      "timing": "before update"
+    }
+  }
+} 

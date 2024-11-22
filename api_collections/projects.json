@@ -1,0 +1,327 @@
+{
+  "info": {
+    "_postman_id": "bc0adafb-747d-4bd4-a55c-412a64adb64f",
+    "name": "Portfolio API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Get Projects",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/projects",
+              "host": ["{{base_url}}"],
+              "path": ["api", "projects"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "published",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "frontend",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "react",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/projects"
+          }
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"AI Chat Application\",\n    \"description\": \"A real-time chat application powered by AI\",\n    \"long_description\": \"A comprehensive chat platform that leverages AI for intelligent responses...\",\n    \"icon\": \"bot\",\n    \"tags\": [\"AI\", \"React\", \"Node.js\", \"WebSocket\"],\n    \"category\": \"ai\",\n    \"slug\": \"ai-chat-application\",\n    \"technical_details\": \"Built using React, Node.js, and OpenAI's GPT-3.5\",\n    \"key_features\": [\n        \"Real-time messaging\",\n        \"AI-powered responses\",\n        \"User authentication\",\n        \"Message history\"\n    ],\n    \"challenges\": \"Implementing real-time communication while maintaining low latency...\",\n    \"solutions\": \"Used WebSocket for real-time updates and implemented message queuing...\",\n    \"github_url\": \"https://github.com/username/ai-chat\",\n    \"live_url\": \"https://ai-chat-demo.vercel.app\",\n    \"status\": \"published\"\n}"
+            },
+            "url": "{{base_url}}/api/projects"
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"project-uuid-here\",\n    \"title\": \"Updated AI Chat Application\",\n    \"description\": \"An enhanced real-time chat application\",\n    \"tags\": [\"AI\", \"React\", \"Node.js\", \"WebSocket\", \"TypeScript\"],\n    \"status\": \"published\",\n    \"key_features\": [\n        \"Real-time messaging\",\n        \"AI-powered responses\",\n        \"User authentication\",\n        \"Message history\",\n        \"Video calls\"\n    ]\n}"
+            },
+            "url": "{{base_url}}/api/projects"
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/projects?id=project-uuid-here",
+              "host": ["{{base_url}}"],
+              "path": ["api", "projects"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "project-uuid-here"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/projects?id=project-uuid-here"
+          }
+        },
+        {
+          "name": "Reorder Projects",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"items\": [\n        { \"id\": \"project-1-uuid\", \"display_order\": 0 },\n        { \"id\": \"project-2-uuid\", \"display_order\": 1 },\n        { \"id\": \"project-3-uuid\", \"display_order\": 2 }\n    ]\n}"
+            },
+            "url": "{{base_url}}/api/projects/reorder"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blog",
+      "item": [
+        {
+          "name": "Get Blog Posts",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/blog",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blog"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "published",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "Next.js",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/blog"
+          }
+        },
+        {
+          "name": "Create Blog Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Getting Started with Next.js 14\",\n    \"content\": \"Next.js 14 introduces several exciting features...\",\n    \"excerpt\": \"A comprehensive guide to Next.js 14's new features\",\n    \"featured_image\": \"https://example.com/image.jpg\",\n    \"tags\": [\"Next.js\", \"React\", \"Web Development\"],\n    \"slug\": \"getting-started-with-nextjs-14\",\n    \"status\": \"published\"\n}"
+            },
+            "url": "{{base_url}}/api/blog"
+          }
+        },
+        {
+          "name": "Update Blog Post",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": \"post-uuid\",\n    \"title\": \"Updated: Getting Started with Next.js 14\",\n    \"content\": \"Updated content...\",\n    \"excerpt\": \"Updated excerpt...\",\n    \"tags\": [\"Next.js\", \"React\", \"Web Development\", \"TypeScript\"],\n    \"status\": \"published\"\n}"
+            },
+            "url": "{{base_url}}/api/blog"
+          }
+        },
+        {
+          "name": "Delete Blog Post",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/blog?id=post-uuid",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blog"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "post-uuid"
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/blog?id=post-uuid"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Home",
+      "item": [
+        {
+          "name": "Get Home Content",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/home",
+              "host": ["{{base_url}}"],
+              "path": ["api", "home"]
+            }
+          }
+        },
+        {
+          "name": "Update Home Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"role\": \"Full Stack Developer\",\n    \"summary\": \"Building innovative solutions with modern technologies\",\n    \"long_summary\": \"Experienced developer specializing in...\",\n    \"avatar_url\": \"https://example.com/avatar.jpg\",\n    \"social_links\": {\n        \"github\": \"https://github.com/username\",\n        \"twitter\": \"https://twitter.com/username\",\n        \"linkedin\": \"https://linkedin.com/in/username\"\n    }\n}"
+            },
+            "url": "{{base_url}}/api/home"
+          }
+        }
+      ]
+    },
+    {
+      "name": "About",
+      "item": [
+        {
+          "name": "Get About Content",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/about",
+              "host": ["{{base_url}}"],
+              "path": ["api", "about"]
+            }
+          }
+        },
+        {
+          "name": "Update About Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"About Me\",\n    \"bio\": \"Full stack developer with expertise in...\",\n    \"skills\": {\n        \"technical\": [\"React\", \"Node.js\", \"TypeScript\", \"Python\"],\n        \"soft\": [\"Problem Solving\", \"Team Leadership\"],\n        \"tools\": [\"Git\", \"Docker\", \"AWS\"]\n    },\n    \"experience\": [\n        {\n            \"title\": \"Senior Developer\",\n            \"company\": \"Tech Corp\",\n            \"duration\": \"2020 - Present\",\n            \"description\": \"Leading development of...\"\n        }\n    ],\n    \"education\": [\n        {\n            \"degree\": \"BSc Computer Science\",\n            \"institution\": \"University Name\",\n            \"year\": \"2019\",\n            \"description\": \"Graduated with honors\"\n        }\n    ],\n    \"achievements\": [\n        \"AWS Certified Solutions Architect\",\n        \"Google Cloud Professional Developer\"\n    ]\n}"
+            },
+            "url": "{{base_url}}/api/about"
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "apiKey",
+      "value": "your-api-key-here",
+      "type": "string"
+    }
+  ]
+} 
