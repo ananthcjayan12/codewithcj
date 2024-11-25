@@ -251,3 +251,48 @@
     transform: translate(-30px, 30px) rotate(240deg);
   }
 }
+
+/* Add these to your existing styles */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(147, 197, 253, 0.1) 100%
+  );
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #1a365d, #2563eb);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hover-lift {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Add these new animations */
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(-50px, 50px) rotate(-180deg); }
+  66% { transform: translate(50px, -50px) rotate(180deg); }
+}
+
+@keyframes float3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(50px, -50px) rotate(180deg); }
+  66% { transform: translate(-50px, 50px) rotate(-180deg); }
+}
+
+.animate-float2 {
+  animation: float2 25s infinite;
+}
+
+.animate-float3 {
+  animation: float3 30s infinite;
+}
