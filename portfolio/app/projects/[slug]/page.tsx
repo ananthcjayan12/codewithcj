@@ -17,19 +17,28 @@ export default async function ProjectPage({ params }: Props) {
 
     return (
       <main className={pageWrapper}>
-        <div className={container}>
+        {/* Background Elements */}
+        <div className="modern-grid-bg fixed inset-0 z-0" />
+        <div className="bg-shapes">
+          <div className="bg-shape" />
+          <div className="bg-shape" />
+          <div className="bg-shape" />
+        </div>
+
+        {/* Content */}
+        <div className={`${container} relative z-10 py-12`}>
           <div className="mx-auto max-w-4xl space-y-8">
             <Link
-              href="/projects"
-              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
+              href="/#projects"
+              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Projects
             </Link>
 
-            <div className="space-y-6">              
+            <div className="space-y-6 animate-fadeIn bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm">              
               <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                   {project.title}
                 </h1>
                 <div className="flex flex-wrap gap-2">
@@ -45,14 +54,14 @@ export default async function ProjectPage({ params }: Props) {
               </div>
 
               {project.long_description && (
-                <div className="prose prose-lg max-w-none">
+                <div className="prose prose-lg max-w-none text-gray-600">
                   <p>{project.long_description}</p>
                 </div>
               )}
 
               {/* Project Links */}
               {(project.live_url || project.github_url) && (
-                <div className="flex gap-4">
+                <div className="flex gap-4 pt-4">
                   {project.live_url && (
                     <a
                       href={project.live_url}

@@ -33,7 +33,7 @@ interface BlogPost {
   slug: string
 }
 
-export default async function BlogPostPage({ params }: Props) {
+export default async function BlogPost({ params }: { params: { slug: string } }) {
   const { data: post } = await supabase
     .from('blog_posts')
     .select('*')
@@ -47,40 +47,45 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <main className={pageWrapper}>
-      <div className={container}>
-        <article className="mx-auto max-w-4xl space-y-8">
+      {/* Background Elements */}
+      <div className="modern-grid-bg fixed inset-0 z-0" />
+      <div className="bg-shapes">
+        <div className="bg-shape" />
+        <div className="bg-shape" />
+        <div className="bg-shape" />
+      </div>
+
+      {/* Content */}
+      <div className={`${container} relative z-10 py-12`}>
+        <div className="max-w-4xl mx-auto">
           <Link
             href="/blog"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-8 transition-colors bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog
           </Link>
 
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-2">
-                {post.tags?.map((tag) => (
+          <article className="prose prose-lg dark:prose-invert max-w-none animate-fadeIn bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm">
+            <header className="text-center mb-12 space-y-4 not-prose">
+              <div className="flex flex-wrap justify-center gap-2">
+                {post.tags?.map((tag: string) => (
                   <Badge key={tag} variant="secondary">
                     {tag}
                   </Badge>
                 ))}
               </div>
-              <h1 className="text-4xl font-bold">{post.title}</h1>
-              <div className="text-muted-foreground">
-                {new Date(post.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </div>
-            </div>
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                {post.title}
+              </h1>
+              <p className="text-xl text-gray-600">
+                {post.excerpt}
+              </p>
+            </header>
 
-            <div className="prose dark:prose-invert max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
-            </div>
-          </div>
-        </article>
+            <div className="mt-8" dangerouslySetInnerHTML={{ __html: post.content }} />
+          </article>
+        </div>
       </div>
     </main>
   )

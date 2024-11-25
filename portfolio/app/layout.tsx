@@ -18,7 +18,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} scroll-smooth`}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        <div className="relative">
+        <div className="modern-grid-bg fixed inset-0 z-0" />
+        <div className="bg-shapes">
+          <div className="bg-shape" />
+          <div className="bg-shape" />
+          <div className="bg-shape" />
+        </div>
+
+        <div className="relative z-1">
           <Navbar />
           <main className="flex-1">{children}</main>
           <ScrollToTop />

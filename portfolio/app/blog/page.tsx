@@ -51,18 +51,27 @@ export default async function BlogPage() {
 
   return (
     <main className={pageWrapper}>
-      <div className={container}>
-        <div className="mx-auto max-w-5xl space-y-12">
-          <div className="space-y-4 text-center">
-            <h1 className="text-4xl font-bold tracking-tight">Blog</h1>
-            <p className="text-xl text-muted-foreground mx-auto max-w-2xl">
+      <div className="modern-grid-bg fixed inset-0 z-0" />
+      <div className="bg-shapes">
+        <div className="bg-shape" />
+        <div className="bg-shape" />
+        <div className="bg-shape" />
+      </div>
+
+      <div className={`${container} relative z-10 py-12`}>
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div className="text-center space-y-4 bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-sm">
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              Blog
+            </h1>
+            <p className="text-xl text-gray-600 mx-auto max-w-2xl">
               Thoughts, stories and ideas about web development, design, and technology.
             </p>
           </div>
 
-          <div className="grid gap-8">
+          <div className="grid gap-8 animate-fadeInUp">
             {posts?.map((post) => (
-              <Card key={post.id} className="flex flex-col overflow-hidden">
+              <Card key={post.id} className="flex flex-col overflow-hidden group hover:shadow-lg transition-shadow duration-200">
                 <CardHeader className="space-y-4">
                   <div className="flex flex-wrap gap-2">
                     {post.tags?.map((tag: string) => (
@@ -72,7 +81,7 @@ export default async function BlogPage() {
                     ))}
                   </div>
                   <Link href={`/blog/${post.slug}`}>
-                    <CardTitle className="text-2xl hover:text-primary transition-colors">
+                    <CardTitle className="text-2xl group-hover:text-primary transition-colors">
                       {post.title}
                     </CardTitle>
                   </Link>
@@ -105,14 +114,6 @@ export default async function BlogPage() {
               </Card>
             ))}
           </div>
-
-          {(!posts || posts.length === 0) && (
-            <div className="text-center py-12">
-              <p className="text-lg text-muted-foreground">
-                No blog posts found. Check back soon!
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </main>
