@@ -136,21 +136,21 @@ export default async function HomePage() {
           </section>
 
           {/* Projects Section with Modern Styling */}
-          <section id="projects" className="py-32 bg-white">
+          <section id="projects" className="py-20 bg-white">
             <Suspense fallback={<ProjectsLoading />}>
               <ProjectsSection />
             </Suspense>
           </section>
 
           {/* About Section with Gradient Background */}
-          <section id="about" className="py-32 bg-gradient-to-b from-gray-50 to-white">
+          <section id="about" className="py-20 bg-gradient-to-b from-gray-50/50 to-white">
             <Suspense fallback={<AboutLoading />}>
               <AboutSection />
             </Suspense>
           </section>
 
           {/* Contact Section */}
-          <section id="contact" className="py-32 bg-white">
+          <section id="contact" className="py-20 bg-white">
             <Suspense fallback={<ContactLoading />}>
               <ContactSection />
             </Suspense>
@@ -262,21 +262,21 @@ export default async function HomePage() {
       </section>
 
       {/* Projects Section with Modern Styling */}
-      <section id="projects" className="py-32 bg-white">
+      <section id="projects" className="py-20 bg-white">
         <Suspense fallback={<ProjectsLoading />}>
           <ProjectsSection />
         </Suspense>
       </section>
 
       {/* About Section with Gradient Background */}
-      <section id="about" className="py-32 bg-gradient-to-b from-gray-50 to-white">
+      <section id="about" className="py-20 bg-gradient-to-b from-gray-50/50 to-white">
         <Suspense fallback={<AboutLoading />}>
           <AboutSection />
         </Suspense>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-32 bg-white">
+      <section id="contact" className="py-20 bg-white">
         <Suspense fallback={<ContactLoading />}>
           <ContactSection />
         </Suspense>
