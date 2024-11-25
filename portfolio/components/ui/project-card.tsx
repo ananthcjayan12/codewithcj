@@ -56,18 +56,9 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
     <Link href={href}>
       <motion.div
         whileHover={{ y: -5, scale: 1.02 }}
-        className={`
-          group relative overflow-hidden rounded-2xl 
-          border border-gray-100
-          bg-white/70 backdrop-blur-md
-          ${colorScheme.background} 
-          p-6 transition-all duration-300 
-          hover:shadow-xl hover:shadow-gray-100/50
-          hover:border-gray-200
-        `}
+        className={`group relative overflow-hidden rounded-2xl border-2 ${colorScheme.border} ${colorScheme.hover} ${colorScheme.background} p-6 transition-all duration-300 hover:shadow-xl`}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-transparent" />
-        <div className="relative space-y-4">
+        <div className="space-y-4">
           {/* Category Tag */}
           <div className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${colorScheme.accent} text-white shadow-sm`}>
             {project.category}

@@ -16,11 +16,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} scroll-smooth`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} scroll-smooth`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <div className="relative">
           <Navbar />
-          {children}
+          <main className="flex-1">{children}</main>
           <ScrollToTop />
           <Toaster position="bottom-right" />
         </div>

@@ -7,14 +7,13 @@ import { ProjectCard } from '@/components/ui/project-card'
 import { useProjects } from '@/hooks/use-projects'
 import type { Project } from '@/hooks/use-projects'
 
-const categories = ['All', 'Frontend', 'Backend', 'Full Stack', 'AI/ML', 'Mobile'] as const
-type Category = typeof categories[number] | 'All'
+const categories = ['All', 'Frontend', 'Backend', 'Full Stack', 'AI/ML', 'Mobile']
 
 export function ProjectsSection() {
   const { projects, isLoading, error } = useProjects()
-  const [activeCategory, setActiveCategory] = useState<Category>('All')
+  const [activeCategory, setActiveCategory] = useState('All')
 
-  const filteredProjects = projects.filter((project: Project) => 
+  const filteredProjects = projects.filter(project => 
     activeCategory === 'All' || project.category === activeCategory
   )
 
