@@ -81,55 +81,64 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="relative min-h-screen">
+    <main className="relative min-h-screen bg-white">
       {/* Hero Section */}
-      <section id="hero" className="min-h-screen flex items-center justify-center">
+      <section id="hero" className="min-h-screen flex items-center justify-center py-20">
         <div className={container}>
-          <div className="flex flex-col items-center justify-center text-center space-y-8">
+          <div className="flex flex-col items-center justify-center text-center max-w-4xl mx-auto animate-fadeInUp">
             {/* Profile Image */}
-            <div className="relative w-48 h-48 mb-8">
+            <div className="relative w-40 h-40 mb-8">
               {home.avatar_url && (
                 <Image
                   src={home.avatar_url}
                   alt={home.name}
                   fill
-                  className="rounded-full object-cover border-4 border-primary/10 shadow-xl"
+                  className="rounded-full object-cover shadow-lg border-4 border-white"
                   priority
                 />
               )}
             </div>
 
             {/* Name and Role */}
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+            <div className="space-y-4 mb-8">
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900">
                 {home.name}
               </h1>
-              <h2 className="text-xl md:text-2xl text-muted-foreground">
+              <h2 className="text-xl md:text-2xl text-blue-600 font-medium">
                 {home.role}
               </h2>
             </div>
 
             {/* Summary */}
-            <div className="max-w-2xl space-y-4">
-              <p className="text-lg text-muted-foreground leading-relaxed">
+            <div className="max-w-2xl space-y-6">
+              <p className="text-xl text-gray-600 leading-relaxed">
                 {home.summary}
               </p>
               {home.long_summary && (
-                <p className="text-base text-muted-foreground leading-relaxed">
+                <p className="text-lg text-gray-500 leading-relaxed">
                   {home.long_summary}
                 </p>
               )}
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex gap-4 pt-4">
-              <Button size="lg" asChild>
+            <div className="flex gap-4 mt-12">
+              <Button
+                size="lg"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-medium transition-colors"
+                asChild
+              >
                 <Link href="#projects" scroll={false}>
                   View Projects
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-gray-200 hover:border-gray-300 px-8 py-3 rounded-full text-lg font-medium transition-colors"
+                asChild
+              >
                 <Link href="#contact" scroll={false}>
                   Get in Touch
                 </Link>
@@ -138,14 +147,14 @@ export default async function HomePage() {
 
             {/* Social Links */}
             {home.social_links && Object.keys(home.social_links).length > 0 && (
-              <div className="flex gap-6 mt-8">
+              <div className="flex gap-6 mt-12">
                 {Object.entries(home.social_links).map(([platform, url]) => (
                   <a
                     key={platform}
                     href={url as string}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-gray-500 hover:text-gray-900 transition-colors"
                   >
                     {platform === 'github' && (
                       <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
@@ -171,21 +180,21 @@ export default async function HomePage() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="min-h-screen py-20 bg-muted/50">
+      <section id="projects" className="py-20 bg-gray-50">
         <Suspense fallback={<ProjectsLoading />}>
           <ProjectsSection />
         </Suspense>
       </section>
 
       {/* About Section */}
-      <section id="about" className="min-h-screen py-20">
+      <section id="about" className="py-20 bg-white">
         <Suspense fallback={<AboutLoading />}>
           <AboutSection />
         </Suspense>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="min-h-screen py-20 bg-muted/50">
+      <section id="contact" className="py-20 bg-gray-50">
         <Suspense fallback={<ContactLoading />}>
           <ContactSection />
         </Suspense>
@@ -193,7 +202,3 @@ export default async function HomePage() {
     </main>
   )
 }
-
-// Force static rendering
-export const dynamic = 'force-static'
-export const revalidate = 3600 // Revalidate every hour
