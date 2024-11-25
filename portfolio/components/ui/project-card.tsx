@@ -4,35 +4,35 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowUpRight } from "lucide-react"
 
-// Color combinations following 60-30-10 rule
+// Modern color schemes inspired by ShipFast
 const colorSchemes = [
   {
-    background: "bg-gradient-to-br from-blue-50 to-blue-100",
-    accent: "bg-blue-600",
-    text: "text-blue-600",
-    border: "border-blue-200",
-    hover: "hover:border-blue-300",
-  },
-  {
-    background: "bg-gradient-to-br from-purple-50 to-purple-100",
-    accent: "bg-purple-600",
-    text: "text-purple-600",
-    border: "border-purple-200",
-    hover: "hover:border-purple-300",
-  },
-  {
-    background: "bg-gradient-to-br from-emerald-50 to-emerald-100",
-    accent: "bg-emerald-600",
-    text: "text-emerald-600",
-    border: "border-emerald-200",
-    hover: "hover:border-emerald-300",
-  },
-  {
-    background: "bg-gradient-to-br from-orange-50 to-orange-100",
-    accent: "bg-orange-600",
+    background: "bg-gradient-to-br from-yellow-100/80 via-yellow-50 to-orange-50",
+    accent: "bg-gradient-to-r from-yellow-400 to-orange-500",
     text: "text-orange-600",
-    border: "border-orange-200",
-    hover: "hover:border-orange-300",
+    border: "border-orange-100",
+    hover: "hover:border-orange-200",
+  },
+  {
+    background: "bg-gradient-to-br from-blue-100/80 via-blue-50 to-cyan-50",
+    accent: "bg-gradient-to-r from-blue-500 to-cyan-500",
+    text: "text-blue-600",
+    border: "border-blue-100",
+    hover: "hover:border-blue-200",
+  },
+  {
+    background: "bg-gradient-to-br from-purple-100/80 via-purple-50 to-pink-50",
+    accent: "bg-gradient-to-r from-purple-500 to-pink-500",
+    text: "text-purple-600",
+    border: "border-purple-100",
+    hover: "hover:border-purple-200",
+  },
+  {
+    background: "bg-gradient-to-br from-green-100/80 via-green-50 to-emerald-50",
+    accent: "bg-gradient-to-r from-green-500 to-emerald-500",
+    text: "text-emerald-600",
+    border: "border-green-100",
+    hover: "hover:border-green-200",
   },
 ]
 
@@ -55,14 +55,23 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
   return (
     <Link href={href}>
       <motion.div
-        whileHover={{ y: -5 }}
-        className={`group relative overflow-hidden rounded-2xl border-2 ${colorScheme.border} ${colorScheme.hover} ${colorScheme.background} p-6 transition-all duration-300`}
+        whileHover={{ y: -5, scale: 1.02 }}
+        className={`
+          group relative overflow-hidden rounded-2xl 
+          border border-gray-100
+          bg-white/70 backdrop-blur-md
+          ${colorScheme.background} 
+          p-6 transition-all duration-300 
+          hover:shadow-xl hover:shadow-gray-100/50
+          hover:border-gray-200
+        `}
       >
-        <div className="space-y-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-transparent" />
+        <div className="relative space-y-4">
           {/* Category Tag */}
-          <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${colorScheme.text} bg-white/80 backdrop-blur-sm`}>
+          <div className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${colorScheme.accent} text-white shadow-sm`}>
             {project.category}
-          </span>
+          </div>
 
           {/* Title */}
           <h3 className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors">
@@ -79,7 +88,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
             {project.tags?.map((tag) => (
               <span
                 key={tag}
-                className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium text-gray-600 bg-white/60 backdrop-blur-sm"
+                className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium text-gray-600 bg-white/80 backdrop-blur-sm border border-gray-100"
               >
                 {tag}
               </span>

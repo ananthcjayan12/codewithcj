@@ -6,14 +6,19 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-interface Project {
+export interface Project {
   id: string
   title: string
   description: string
+  long_description?: string
   category: string
   tags: string[]
   slug: string
-  created_at: string
+  icon?: string
+  github_url?: string
+  live_url?: string
+  status: 'draft' | 'published'
+  display_order: number
 }
 
 export function useProjects() {
@@ -27,7 +32,8 @@ export function useProjects() {
         const { data, error } = await supabase
           .from('projects')
           .select('*')
-          .order('created_at', { ascending: false })
+          .eq('status', 'published')
+          .order('display_order', { ascending: true })
 
         if (error) throw error
 
