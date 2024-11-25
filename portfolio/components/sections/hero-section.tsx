@@ -16,50 +16,74 @@ interface HeroSectionProps {
 
 export function HeroSection({ data }: HeroSectionProps) {
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden pt-24">
       <div className={`${container} relative z-10`}>
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
-          <div className="text-center lg:text-left space-y-8">
-            {/* Profile Image for Mobile */}
-            <div className="lg:hidden flex justify-center mb-8">
-              <motion.div
-                initial={{ scale: 0.5, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-2xl opacity-20" />
-                {data?.avatar_url && (
-                  <Image
-                    src={data.avatar_url}
-                    alt={data.name}
-                    width={200}
-                    height={200}
-                    className="rounded-full border-4 border-white shadow-xl relative z-10"
-                  />
-                )}
-              </motion.div>
-            </div>
+        <div className="max-w-5xl mx-auto text-center space-y-8">
+          {/* Small Profile Image */}
+          <motion.div
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative inline-block"
+          >
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full opacity-75 blur" />
+            {data?.avatar_url && (
+              <div className="relative w-[80px] h-[80px]">
+                <Image
+                  src={data.avatar_url}
+                  alt={data.name}
+                  width={80}
+                  height={80}
+                  className="rounded-full border-2 border-white shadow-lg object-cover relative z-10"
+                  priority
+                />
+              </div>
+            )}
+          </motion.div>
+
+          {/* Main Content */}
+          <div className="space-y-6">
+            {/* Welcome Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center px-3 py-1 rounded-full bg-orange-100 text-orange-600 text-sm font-medium"
+            >
+              <span className="flex h-2 w-2 rounded-full bg-orange-500 mr-2" />
+              Welcome to my portfolio
+            </motion.div>
 
             {/* Name and Title */}
             <div className="space-y-4">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-5xl lg:text-7xl font-bold tracking-tight bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent"
+                transition={{ delay: 0.1 }}
+                className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight"
               >
-                {data?.name || 'Your Name'}
+                Hi, I'm{' '}
+                <span className="relative inline-block">
+                  {data?.name || 'Your Name'}
+                  <div className="absolute left-0 right-0 h-4 bg-gradient-to-r from-yellow-300 to-orange-300 opacity-50 bottom-2 -z-10 transform -rotate-1" />
+                </span>
               </motion.h1>
+
+              {/* Roles with Modern Badges */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="flex flex-wrap justify-center lg:justify-start gap-4 text-xl lg:text-2xl font-medium"
+                className="flex flex-wrap justify-center gap-3 text-lg"
               >
-                <span className="text-blue-600">Backend Engineer</span>
-                <span className="text-purple-600">Automation Specialist</span>
-                <span className="text-indigo-600">AI Enthusiast</span>
+                <span className="px-4 py-1.5 bg-gradient-to-r from-yellow-500/10 to-yellow-500/20 text-yellow-700 rounded-full font-medium border border-yellow-500/20">
+                  Backend Engineer
+                </span>
+                <span className="px-4 py-1.5 bg-gradient-to-r from-orange-500/10 to-orange-500/20 text-orange-700 rounded-full font-medium border border-orange-500/20">
+                  Automation Specialist
+                </span>
+                <span className="px-4 py-1.5 bg-gradient-to-r from-red-500/10 to-red-500/20 text-red-700 rounded-full font-medium border border-red-500/20">
+                  AI Enthusiast
+                </span>
               </motion.div>
             </div>
 
@@ -68,7 +92,7 @@ export function HeroSection({ data }: HeroSectionProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0"
+              className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
             >
               {data?.summary || 'Welcome to my innovation journey...'}
             </motion.p>
@@ -78,44 +102,43 @@ export function HeroSection({ data }: HeroSectionProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="flex flex-wrap gap-4 justify-center lg:justify-start"
+              className="flex flex-wrap gap-4 justify-center"
             >
               <a
                 href="#projects"
-                className="group px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-medium inline-flex items-center hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-0.5"
+                className="group px-8 py-3 bg-black text-white rounded-full font-medium inline-flex items-center hover:bg-gradient-to-r hover:from-yellow-500 hover:to-orange-500 transition-all duration-300"
               >
-                View Projects
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <span className="relative flex items-center">
+                  View Projects
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </span>
               </a>
               <a
                 href="#contact"
-                className="px-8 py-3 bg-white/90 backdrop-blur-sm text-gray-900 rounded-full font-medium border border-gray-200 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                className="px-8 py-3 bg-white/90 backdrop-blur-sm ring-1 ring-black/5 hover:ring-orange-500/50 text-gray-900 rounded-full font-medium hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
               >
                 Get in Touch
               </a>
             </motion.div>
-          </div>
 
-          {/* Profile Image for Desktop */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="hidden lg:block relative"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-[2rem] blur-3xl opacity-20" />
-            {data?.avatar_url && (
-              <Image
-                src={data.avatar_url}
-                alt={data.name}
-                width={500}
-                height={500}
-                className="rounded-[2rem] border-8 border-white shadow-2xl relative z-10"
-                priority
-              />
-            )}
-          </motion.div>
+            {/* Status Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/50 backdrop-blur-sm border border-black/5 rounded-full text-sm text-gray-600"
+            >
+              <span className="flex h-2 w-2 rounded-full bg-green-500" />
+              Available for new projects
+            </motion.div>
+          </div>
         </div>
+      </div>
+
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-yellow-200/30 rounded-full mix-blend-multiply filter blur-3xl animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-orange-200/30 rounded-full mix-blend-multiply filter blur-3xl animate-float2" />
       </div>
     </section>
   )

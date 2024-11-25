@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google'
+import { Inter, Plus_Jakarta_Sans } from 'next/font/google'
 import { Navbar } from '@/components/navigation/navbar'
 import { ScrollToTop } from '@/components/ui/scroll-to-top'
 import { Toaster } from 'sonner'
@@ -11,13 +11,19 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jakarta',
+})
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} scroll-smooth`}>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable} scroll-smooth`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <div className="modern-grid-bg fixed inset-0 z-0" />
         <div className="bg-shapes">

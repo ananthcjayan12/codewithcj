@@ -28,13 +28,13 @@ export default async function HomePage() {
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           {/* Modern Gradient */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-50 via-white to-purple-50" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-yellow-50 via-white to-orange-50" />
           
           {/* Floating Elements */}
           <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-1/4 -left-10 w-[500px] h-[500px] bg-blue-200/30 rounded-full mix-blend-multiply filter blur-3xl animate-float" />
-            <div className="absolute bottom-1/4 -right-10 w-[500px] h-[500px] bg-purple-200/30 rounded-full mix-blend-multiply filter blur-3xl animate-float2" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-pink-200/20 rounded-full mix-blend-multiply filter blur-3xl animate-float3" />
+            <div className="absolute top-1/4 -left-10 w-[500px] h-[500px] bg-yellow-200/30 rounded-full mix-blend-multiply filter blur-3xl animate-float" />
+            <div className="absolute bottom-1/4 -right-10 w-[500px] h-[500px] bg-orange-200/30 rounded-full mix-blend-multiply filter blur-3xl animate-float2" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-yellow-100/20 rounded-full mix-blend-multiply filter blur-3xl animate-float3" />
           </div>
 
           {/* Grid Overlay */}
