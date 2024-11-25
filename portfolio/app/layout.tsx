@@ -4,6 +4,12 @@ import { ScrollToTop } from '@/components/ui/scroll-to-top'
 import { Toaster } from 'sonner'
 import './globals.css'
 import { FloatingSocial } from '@/components/ui/floating-social'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 const inter = Inter({
   subsets: ['latin'],
@@ -17,11 +23,17 @@ const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Fetch contact data
+  const { data: home } = await supabase
+    .from('home_content')
+    .select('social_links, contact_email, contact_phone')
+    .single()
+
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable} scroll-smooth`}>
       <body className="min-h-screen bg-background font-sans antialiased">
@@ -36,7 +48,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <ScrollToTop />
-          <FloatingSocial />
+          <FloatingSocial data={home || {}} />
           <Toaster position="bottom-right" />
         </div>
       </body>

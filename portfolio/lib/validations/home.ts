@@ -2,17 +2,18 @@ import * as z from "zod"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 export const homeFormSchema = z.object({
-  id: z.string().optional(),
   name: z.string().min(1, "Name is required"),
   role: z.string().min(1, "Role is required"),
   summary: z.string().min(1, "Summary is required"),
   long_summary: z.string().optional(),
-  avatar_url: z.string().url("Invalid image URL").optional(),
+  avatar_url: z.string().optional(),
+  contact_phone: z.string().optional(),
+  contact_email: z.string().email().optional(),
   social_links: z.object({
-    github: z.string().url("Invalid GitHub URL").optional().or(z.literal("")),
-    twitter: z.string().url("Invalid Twitter URL").optional().or(z.literal("")),
-    linkedin: z.string().url("Invalid LinkedIn URL").optional().or(z.literal(""))
-  }).default({})
+    twitter: z.string().optional(),
+    linkedin: z.string().optional(),
+    github: z.string().optional(),
+  }),
 })
 
 export type HomeFormValues = z.infer<typeof homeFormSchema>

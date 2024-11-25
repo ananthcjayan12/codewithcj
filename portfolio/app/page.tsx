@@ -19,7 +19,12 @@ const supabase = createClient(
 
 export default async function HomePage() {
   unstable_noStore()
-  const { data: home } = await supabase.from('home_content').select('*').single()
+  
+  // Fetch both home content and settings
+  const [{ data: home }, { data: settings }] = await Promise.all([
+    supabase.from('home_content').select('*').single(),
+    supabase.from('settings').select('contact_email, contact_phone').single()
+  ])
 
   return (
     <main className="relative">
@@ -63,11 +68,11 @@ export default async function HomePage() {
         </Suspense>
       </section>
 
-      {/* Contact Section */}
+      {/* Contact Section - Pass both home and settings data */}
       <section id="contact" className="relative py-20">
         <div className="absolute inset-0 bg-gradient-to-b from-white via-indigo-50/20 to-white" />
         <Suspense fallback={<ContactLoading />}>
-          <ContactSection />
+          <ContactSection data={home} />
         </Suspense>
       </section>
 
