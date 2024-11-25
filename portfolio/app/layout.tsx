@@ -3,6 +3,7 @@ import { Navbar } from '@/components/navigation/navbar'
 import { ScrollToTop } from '@/components/ui/scroll-to-top'
 import { Toaster } from 'sonner'
 import './globals.css'
+import { FloatingSocial } from '@/components/ui/floating-social'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -29,6 +30,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <ScrollToTop />
+          <FloatingSocial />
           <Toaster position="bottom-right" />
         </div>
       </body>

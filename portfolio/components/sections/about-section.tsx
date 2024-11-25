@@ -1,121 +1,85 @@
 "use client"
 
-import { motion } from 'framer-motion'
-import { container } from '@/lib/utils'
-import { useAbout } from '@/hooks/use-about'
-import { ChevronRight } from 'lucide-react'
+import { motion } from "framer-motion"
+import { container } from "@/lib/utils"
 
 export function AboutSection() {
-  const { about, isLoading, error } = useAbout()
-
-  if (isLoading) {
-    return <div className={container}>Loading about content...</div>
-  }
-
-  if (error) {
-    return <div className={container}>Error loading about content: {error.message}</div>
-  }
-
   return (
-    <div className={container}>
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
-            About Me
-          </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-indigo-600 to-violet-600 mx-auto rounded-full" />
-        </div>
+    <section id="about" className="py-20 relative">
+      {/* Background with subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]" />
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Column - Bio */}
-          <div className="lg:col-span-7">
-            <motion.div 
+      <div className={`${container} relative`}>
+        <div className="max-w-4xl mx-auto space-y-12">
+          {/* Header */}
+          <div className="text-center space-y-4">
+            <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="prose prose-lg max-w-none"
+              className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white"
             >
-              <p className="text-gray-600 leading-relaxed">{about?.bio}</p>
-            </motion.div>
+              About Me
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
+            >
+              Welcome to my innovation journey, where I integrate creative problem-solving with technical excellence...
+            </motion.p>
           </div>
 
-          {/* Right Column - Skills */}
-          <div className="lg:col-span-5">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
-            >
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Technical Skills</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {about?.skills?.technical?.map((skill, index) => (
-                  <motion.div
-                    key={skill}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-center gap-2 text-gray-600 text-sm"
-                  >
-                    <ChevronRight className="w-4 h-4 text-indigo-600" />
-                    <span>{skill}</span>
-                  </motion.div>
+          {/* Technical Skills Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm">
+            <div>
+              <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Technical Skills</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Left Column */}
+                <div className="space-y-3">
+                  {['Python', 'JavaScript', 'React', 'Node.js', 'Django', 'MongoDB'].map((skill) => (
+                    <div key={skill} className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="text-gray-700 dark:text-gray-300">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Right Column */}
+                <div className="space-y-3">
+                  {['AWS', 'Docker', 'Git', 'SQL', 'TypeScript', 'Next.js'].map((skill) => (
+                    <div key={skill} className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="text-gray-700 dark:text-gray-300">{skill}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Additional Skills or Info */}
+            <div>
+              <h3 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Specializations</h3>
+              <div className="space-y-4">
+                {[
+                  'Full Stack Development',
+                  'Cloud Architecture',
+                  'DevOps & Automation',
+                  'AI/ML Integration'
+                ].map((spec) => (
+                  <div key={spec} className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-500" />
+                    <span className="text-gray-700 dark:text-gray-300">{spec}</span>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
-
-        {/* Experience & Education */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-16">
-          {/* Experience */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            <h3 className="text-xl font-semibold text-gray-900 pb-2 border-b border-gray-200">
-              Experience
-            </h3>
-            {about?.experience?.map((exp, index) => (
-              <div 
-                key={index}
-                className="relative pl-6 border-l-2 border-indigo-100 py-4"
-              >
-                <div className="absolute left-[-5px] top-6 w-2 h-2 rounded-full bg-indigo-600" />
-                <h4 className="text-lg font-medium text-gray-900">{exp.role}</h4>
-                <p className="text-indigo-600 font-medium">{exp.company}</p>
-                <p className="text-sm text-gray-500 mt-1">{exp.period}</p>
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Education */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6"
-          >
-            <h3 className="text-xl font-semibold text-gray-900 pb-2 border-b border-gray-200">
-              Education
-            </h3>
-            {about?.education?.map((edu, index) => (
-              <div 
-                key={index}
-                className="relative pl-6 border-l-2 border-indigo-100 py-4"
-              >
-                <div className="absolute left-[-5px] top-6 w-2 h-2 rounded-full bg-indigo-600" />
-                <h4 className="text-lg font-medium text-gray-900">{edu.degree}</h4>
-                <p className="text-indigo-600 font-medium">{edu.school}</p>
-                <p className="text-sm text-gray-500 mt-1">{edu.period}</p>
-              </div>
-            ))}
-          </motion.div>
-        </div>
       </div>
-    </div>
+    </section>
   )
 } 
