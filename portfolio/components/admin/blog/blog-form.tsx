@@ -29,7 +29,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { toast } from "sonner"
-import { ImageUpload } from "./image-upload"
+import { ImageUpload } from "@/components/ui/image-upload"
 import { blogFormSchema, type BlogFormValues } from "@/lib/validations/blog"
 import { BlogPreview } from "./blog-preview"
 
@@ -232,9 +232,10 @@ export function BlogForm({ initialData }: BlogFormProps) {
                   <FormLabel>Featured Image</FormLabel>
                   <FormControl>
                     <ImageUpload
-                      currentImage={field.value}
-                      onUploadComplete={field.onChange}
-                      label="Featured Image"
+                      value={field.value}
+                      onChange={field.onChange}
+                      onRemove={() => field.onChange("")}
+                      bucket="blog"
                     />
                   </FormControl>
                   <FormMessage />

@@ -4,6 +4,8 @@ import Link from "next/link"
 import { ArrowLeft, Calendar, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { container, pageWrapper } from "@/lib/utils"
+import Image from "next/image"
+import { getBlogPost } from "@/lib/supabase"
 
 // Create a Supabase client with service role
 const supabase = createClient(
@@ -31,15 +33,11 @@ interface BlogPost {
   tags: string[]
   created_at: string
   slug: string
+  featured_image: string
 }
 
 export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const { data: post } = await supabase
-    .from('blog_posts')
-    .select('*')
-    .eq('slug', params.slug)
-    .eq('status', 'published')
-    .single() as { data: BlogPost | null }
+  const post = await getBlogPost(params.slug)
 
   if (!post) {
     notFound()
@@ -52,6 +50,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       day: 'numeric'
     })
   }
+
+  console.log('Featured image URL:', post.featured_image)
 
   return (
     <main className={pageWrapper}>
@@ -75,6 +75,21 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 
           {/* Main Content */}
           <article className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-sm overflow-hidden">
+            {/* Featured Image */}
+            {post.featured_image && (
+              <div className="relative w-full aspect-video">
+                <Image
+                  key={post.featured_image}
+                  src={post.featured_image}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="100vw"
+                />
+              </div>
+            )}
+
             {/* Header */}
             <header className="p-8 border-b border-gray-100 space-y-4">
               <div className="flex flex-wrap gap-2">

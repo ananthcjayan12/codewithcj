@@ -5,6 +5,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { container, pageWrapper } from "@/lib/utils"
 import { CalendarDays, ArrowRight, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
+import { getBlogPosts } from "@/lib/supabase"
 
 // Create a Supabase client with service role
 const supabase = createClient(
@@ -25,14 +27,11 @@ interface BlogPost {
   tags: string[]
   created_at: string
   slug: string
+  featured_image: string
 }
 
 export default async function BlogPage() {
-  const { data: posts } = await supabase
-    .from('blog_posts')
-    .select('*')
-    .eq('status', 'published')
-    .order('created_at', { ascending: false })
+  const posts = await getBlogPosts()
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -72,6 +71,17 @@ export default async function BlogPage() {
           <div className="grid gap-8 animate-fadeInUp">
             {posts?.map((post) => (
               <Card key={post.id} className="flex flex-col overflow-hidden group hover:shadow-lg transition-shadow duration-200">
+                {post.featured_image && (
+                  <div className="relative w-full aspect-video">
+                    <Image
+                      src={post.featured_image}
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                )}
+
                 <CardHeader className="space-y-4">
                   <div className="flex flex-wrap gap-2">
                     {post.tags?.map((tag: string) => (

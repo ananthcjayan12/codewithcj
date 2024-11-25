@@ -13,15 +13,38 @@ const supabase = createClient(
 )
 
 export async function getProject(slug: string) {
+  console.log('Fetching project with slug:', slug)
+  
   const { data: project, error } = await supabase
     .from('projects')
-    .select('*')
+    .select(`
+      id,
+      title,
+      description,
+      long_description,
+      icon,
+      featured_image,
+      tags,
+      category,
+      slug,
+      status,
+      technical_details,
+      key_features,
+      challenges,
+      solutions,
+      github_url,
+      live_url,
+      created_at
+    `)
     .eq('slug', slug)
+    .eq('status', 'published')
     .single()
+
+  console.log('Raw project data:', project)
 
   if (error) {
     console.error('Error fetching project:', error)
-    throw new Error('Failed to fetch project')
+    throw error
   }
 
   if (!project) {
@@ -57,4 +80,55 @@ export async function getAbout() {
   }
 
   return about
+}
+
+export async function getBlogPost(slug: string) {
+  console.log('Fetching blog post with slug:', slug)
+  
+  const { data: post, error } = await supabase
+    .from('blog_posts')
+    .select(`
+      id,
+      title,
+      slug,
+      content,
+      excerpt,
+      featured_image,
+      tags,
+      status,
+      created_at
+    `)
+    .eq('slug', slug)
+    .eq('status', 'published')
+    .single()
+
+  console.log('Raw blog post data:', post)
+
+  if (error) {
+    console.error('Error fetching blog post:', error)
+    throw error
+  }
+
+  if (!post) {
+    throw new Error('Blog post not found')
+  }
+
+  return post
+}
+
+export async function getBlogPosts() {
+  const { data: posts, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false })
+
+  console.log('Blog posts data:', posts)
+
+  if (error) {
+    console.error('Error fetching blog posts:', error)
+    throw new Error('Failed to fetch blog posts')
+  }
+
+  return posts || []
 } 

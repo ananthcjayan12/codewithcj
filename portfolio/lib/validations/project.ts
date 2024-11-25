@@ -5,6 +5,7 @@ export const projectFormSchema = z.object({
   description: z.string().min(1, "Description is required").max(300, "Description is too long"),
   long_description: z.string().optional(),
   icon: z.string().min(1, "Icon is required"),
+  featured_image: z.string().optional(),
   tags: z.array(z.string()).min(1, "At least one tag is required"),
   category: z.string().min(1, "Category is required"),
   status: z.enum(["draft", "published"]),
@@ -17,7 +18,7 @@ export const projectFormSchema = z.object({
   solutions: z.string().optional(),
   github_url: z.string().url().optional().or(z.literal("")),
   live_url: z.string().url().optional().or(z.literal("")),
-  display_order: z.number().optional()
+  display_order: z.number().optional(),
 })
 
 export type ProjectFormValues = z.infer<typeof projectFormSchema> 

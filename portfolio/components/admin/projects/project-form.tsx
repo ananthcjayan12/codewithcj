@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select"
 import { toast } from "sonner"
 import { projectFormSchema, type ProjectFormValues } from "@/lib/validations/project"
+import { ImageUpload } from "@/components/ui/image-upload"
 
 interface ProjectFormProps {
   initialData?: ProjectFormValues & { id?: string }
@@ -442,6 +443,26 @@ export function ProjectForm({ initialData }: ProjectFormProps) {
                     </FormControl>
                     <FormLabel>Publish project</FormLabel>
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Featured Image */}
+            <FormField
+              control={form.control}
+              name="featured_image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Featured Image</FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      onRemove={() => field.onChange("")}
+                      bucket="projects"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
