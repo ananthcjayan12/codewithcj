@@ -6,6 +6,9 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { defaultMetadata } from "@/config/metadata";
 import { Toaster } from "sonner";
+import { SmoothNav } from "@/components/smooth-nav"
+import { Header } from "@/components/layout/header"
+import { cn } from "@/lib/utils"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,8 +38,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Navbar />
+          <SmoothNav />
           <div className="relative min-h-screen">
-            <Navbar />
             {children}
             <ScrollToTop />
             <Toaster />

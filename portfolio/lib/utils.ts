@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-// Restore layout utility classes
+// Layout utility classes
 export const container = "container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"
 
 export const section = "py-16 sm:py-20 md:py-24 lg:py-32"
