@@ -107,10 +107,11 @@ CREATE TABLE home_content (
     role TEXT NOT NULL,
     summary TEXT NOT NULL,
     long_summary TEXT,
-    avatar_url TEXT, -- This will store the Supabase Storage URL
-    social_links JSONB NOT NULL DEFAULT '{}',
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    avatar_url TEXT,
+    social_links JSONB,
+    contact_email TEXT,
+    contact_phone TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
 -- Add trigger for updated_at

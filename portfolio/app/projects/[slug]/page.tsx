@@ -1,53 +1,10 @@
-import { notFound } from "next/navigation"
-import { ArrowLeft, Code2, Database, Bot, LineChart, MessageSquare, QrCode, FileText, Video, BarChart, Cog, Brain, Building2, Workflow } from "lucide-react"
-import { Metadata } from "next"
-import Link from "next/link"
-import { getProject, getProjects } from "@/lib/supabase"
-import { container, pageWrapper } from "@/lib/utils"
+import { getProject } from '@/lib/supabase'
+import { ArrowLeft, Globe, Github } from 'lucide-react'
+import Link from 'next/link'
+import Image from 'next/image'
 import { Badge } from "@/components/ui/badge"
-import { cache } from 'react'
-
-
-export const runtime = "edge"
-
-// Use static rendering with ISR
-export const dynamic = 'force-static'
-export const revalidate = 3600 // Cache for 1 hour
-
-// Move iconMap outside component to prevent recreation
-const iconMap = {
-  code: Code2,
-  database: Database,
-  bot: Bot,
-  chart: LineChart,
-  message: MessageSquare,
-  qr: QrCode,
-  file: FileText,
-  video: Video,
-  bar: BarChart,
-  automation: Cog,
-  ai: Brain,
-  erp: Building2,
-  workflow: Workflow,
-} as const
-
-// Add proper typing for project data
-interface Project {
-  id: string
-  title: string
-  description: string
-  long_description: string | null
-  icon: string | null
-  tags: string[]
-  category: string | null
-  technical_details: string | null
-  key_features: string[] | null
-  challenges: string | null
-  solutions: string | null
-  github_url: string | null
-  live_url: string | null
-  status: 'draft' | 'published'
-}
+import { container, pageWrapper } from "@/lib/utils"
+import { notFound } from 'next/navigation'
 
 interface Props {
   params: {
@@ -55,151 +12,119 @@ interface Props {
   }
 }
 
-// Use React's cache for project data
-const getProjectData = cache(async (slug: string) => {
-  const project = await getProject(slug)
-  if (!project) notFound()
-  return project
-})
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const project = await getProjectData(params.slug)
-  
-  return {
-    title: `${project.title} | Portfolio`,
-    description: project.description,
-  }
-}
+export const runtime = 'edge'
 
 export default async function ProjectPage({ params }: Props) {
-  const project = await getProjectData(params.slug)
+  try {
+    const project = await getProject(params.slug)
+    console.log('Project data:', project)
 
-  const IconComponent = iconMap[project.icon as keyof typeof iconMap] || Code2
+    console.log('Featured image URL:', project.featured_image)
 
-  return (
-    <main className={pageWrapper}>
-      <div className={container}>
-        <div className="mx-auto max-w-4xl space-y-8">
-          <Link
-            href="/projects"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Projects
-          </Link>
+    return (
+      <main className={pageWrapper}>
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-orange-50" />
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
+        </div>
 
-          <div className="space-y-6">
-            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10">
-              <IconComponent className="h-8 w-8 text-primary" />
-            </div>
-            
-            <div className="space-y-4">
-              <h1 className="text-4xl font-bold tracking-tight">{project.title}</h1>
-              <div className="flex flex-wrap gap-2">
-                {project.tags?.map((tag: string) => (
-                  <Badge key={tag} variant="secondary">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                {project.description}
-              </p>
-            </div>
-          </div>
-
-          <div className="prose dark:prose-invert max-w-none">
-            <h2>Project Overview</h2>
-            <p className="leading-relaxed">{project.long_description}</p>
-
-            {project.technical_details && (
-              <>
-                <h2>Technical Details</h2>
-                <p className="leading-relaxed">{project.technical_details}</p>
-              </>
-            )}
-
-            {project.key_features && project.key_features.length > 0 && (
-              <>
-                <h2>Key Features</h2>
-                <ul className="space-y-2">
-                  {project.key_features.map((feature: string, index: number) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary/50 flex-shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-
-            {(project.challenges || project.solutions) && (
-              <>
-                <h2>Challenges & Solutions</h2>
-                {project.challenges && (
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold">Challenges</h3>
-                    <p className="leading-relaxed">{project.challenges}</p>
-                  </div>
-                )}
-                {project.solutions && (
-                  <div>
-                    <h3 className="text-lg font-semibold">Solutions</h3>
-                    <p className="leading-relaxed">{project.solutions}</p>
-                  </div>
-                )}
-              </>
-            )}
-
-            {(project.github_url || project.live_url) && (
-              <>
-                <h2>Project Links</h2>
-                <div className="flex gap-4">
-                  {project.github_url && (
-                    <a 
-                      href={project.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-primary hover:underline"
-                    >
-                      <span>GitHub Repository</span>
-                    </a>
-                  )}
-                  {project.live_url && (
-                    <a 
-                      href={project.live_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-primary hover:underline"
-                    >
-                      <span>Live Demo</span>
-                    </a>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="flex gap-4 pt-8">
+        {/* Content */}
+        <div className={`${container} relative z-10 py-24`}>
+          <div className="mx-auto max-w-4xl">
+            {/* Back Button */}
             <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-lg bg-primary px-8 py-3 text-base font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              href="/#projects"
+              className="inline-flex items-center text-sm bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200 hover:border-yellow-500/50 transition-all duration-300 text-gray-600 hover:text-gray-900 mb-8 shadow-sm"
             >
-              Discuss This Project
-              <ArrowLeft className="ml-2 h-5 w-5 rotate-180" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Projects
             </Link>
+
+            {/* Main Content Card */}
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-sm overflow-hidden">
+              {/* Featured Image */}
+              {project.featured_image && (
+                <div className="w-full h-[400px] relative">
+                  <Image
+                    key={project.featured_image}
+                    src={project.featured_image}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    priority
+                    sizes="100vw"
+                  />
+                </div>
+              )}
+
+              <div className="p-8 space-y-8">
+                {/* Header */}
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-2">
+                    {project.tags?.map((tag: string) => (
+                      <Badge 
+                        key={tag} 
+                        className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                  <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+                    {project.title}
+                  </h1>
+                  <p className="text-xl text-gray-700 leading-relaxed">
+                    {project.description}
+                  </p>
+                </div>
+
+                {/* Main Content */}
+                {project.long_description && (
+                  <div className="prose prose-lg max-w-none">
+                    <div className="text-gray-700 leading-relaxed space-y-6">
+                      {project.long_description.split('\n\n').map((paragraph: string, index: number) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Project Links */}
+                {(project.live_url || project.github_url) && (
+                  <div className="flex flex-wrap gap-4 pt-4">
+                    {project.live_url && (
+                      <a
+                        href={project.live_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-full font-medium hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300"
+                      >
+                        <Globe className="mr-2 h-5 w-5" />
+                        View Live Site
+                      </a>
+                    )}
+                    {project.github_url && (
+                      <a
+                        href={project.github_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-6 py-3 bg-white ring-1 ring-gray-200 hover:ring-gray-300 text-gray-900 rounded-full font-medium hover:shadow-lg transition-all duration-300"
+                      >
+                        <Github className="mr-2 h-5 w-5" />
+                        View Source
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </main>
-  )
-}
-
-// Update generateStaticParams to use getProjects
-export async function generateStaticParams() {
-  const projects = await getProjects()
-  
-  return projects.map((project) => ({
-    slug: project.slug,
-  }))
+      </main>
+    )
+  } catch (error) {
+    console.error('Error in ProjectPage:', error)
+    notFound()
+  }
 } 

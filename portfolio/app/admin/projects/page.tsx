@@ -4,6 +4,8 @@ import { ProjectsList } from "@/components/admin/projects/projects-list"
 import Link from "next/link"
 import { unstable_noStore } from 'next/cache'
 
+export const runtime = 'edge'
+
 export default async function ProjectsPage() {
   // Disable caching for this page
   unstable_noStore()

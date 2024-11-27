@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Calendar, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { container, pageWrapper } from "@/lib/utils"
+import Image from "next/image"
+import { getBlogPost } from "@/lib/supabase"
 
 // Create a Supabase client with service role
 const supabase = createClient(
@@ -31,56 +33,102 @@ interface BlogPost {
   tags: string[]
   created_at: string
   slug: string
+  featured_image: string
 }
 
-export default async function BlogPostPage({ params }: Props) {
-  const { data: post } = await supabase
-    .from('blog_posts')
-    .select('*')
-    .eq('slug', params.slug)
-    .eq('status', 'published')
-    .single() as { data: BlogPost | null }
+export default async function BlogPost({ params }: { params: { slug: string } }) {
+  const post = await getBlogPost(params.slug)
 
   if (!post) {
     notFound()
   }
 
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
+
+  console.log('Featured image URL:', post.featured_image)
+
   return (
     <main className={pageWrapper}>
-      <div className={container}>
-        <article className="mx-auto max-w-4xl space-y-8">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 via-white to-orange-50" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]" />
+      </div>
+
+      {/* Content */}
+      <div className={`${container} relative z-10 py-24`}>
+        <div className="max-w-4xl mx-auto">
+          {/* Back Button */}
           <Link
             href="/blog"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center text-sm bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full border border-gray-200 hover:border-yellow-500/50 transition-all duration-300 text-gray-600 hover:text-gray-900 mb-8 shadow-sm"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog
           </Link>
 
-          <div className="space-y-6">
-            <div className="space-y-4">
+          {/* Main Content */}
+          <article className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-sm overflow-hidden">
+            {/* Featured Image */}
+            {post.featured_image && (
+              <div className="relative w-full aspect-video">
+                <Image
+                  key={post.featured_image}
+                  src={post.featured_image}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="100vw"
+                />
+              </div>
+            )}
+
+            {/* Header */}
+            <header className="p-8 border-b border-gray-100 space-y-4">
               <div className="flex flex-wrap gap-2">
-                {post.tags?.map((tag) => (
-                  <Badge key={tag} variant="secondary">
+                {post.tags?.map((tag: string) => (
+                  <Badge 
+                    key={tag} 
+                    className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                  >
                     {tag}
                   </Badge>
                 ))}
               </div>
-              <h1 className="text-4xl font-bold">{post.title}</h1>
-              <div className="text-muted-foreground">
-                {new Date(post.created_at).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
+              <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+                {post.title}
+              </h1>
+              <p className="text-xl text-gray-700">
+                {post.excerpt}
+              </p>
+              <div className="flex items-center gap-6 text-sm text-gray-600 pt-4">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>{formatDate(post.created_at)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span>{Math.ceil(post.content.split(' ').length / 200)} min read</span>
+                </div>
               </div>
-            </div>
+            </header>
 
-            <div className="prose dark:prose-invert max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            {/* Content */}
+            <div className="p-8">
+              <div 
+                className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600 hover:prose-a:text-blue-700"
+                dangerouslySetInnerHTML={{ __html: post.content }} 
+              />
             </div>
-          </div>
-        </article>
+          </article>
+        </div>
       </div>
     </main>
   )

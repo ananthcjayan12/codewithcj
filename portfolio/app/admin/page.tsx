@@ -1,6 +1,8 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 
+export const runtime = 'edge'
+
 export default async function AdminDashboard() {
   const supabase = createServerComponentClient({ cookies })
   
