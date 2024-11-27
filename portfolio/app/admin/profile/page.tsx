@@ -2,6 +2,8 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { ProfileForm } from "@/components/admin/profile/profile-form"
 
+export const runtime = 'edge'
+
 export default async function ProfilePage() {
   const supabase = createServerComponentClient({ cookies })
   

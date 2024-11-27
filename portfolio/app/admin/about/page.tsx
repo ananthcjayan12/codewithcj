@@ -3,6 +3,8 @@ import { cookies } from "next/headers"
 import { AboutForm } from "@/components/admin/about/about-form"
 import { unstable_noStore } from 'next/cache'
 
+export const runtime = 'edge'
+
 export default async function AboutEditorPage() {
   // Disable caching
   unstable_noStore()

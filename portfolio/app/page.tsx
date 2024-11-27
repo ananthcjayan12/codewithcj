@@ -17,6 +17,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+export const runtime = 'edge'
+
 export default async function HomePage() {
   unstable_noStore()
   

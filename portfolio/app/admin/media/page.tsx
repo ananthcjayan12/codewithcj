@@ -2,6 +2,8 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { MediaLibrary } from "@/components/admin/media/media-library"
 
+export const runtime = 'edge'
+
 export default async function MediaPage() {
   const supabase = createServerComponentClient({ cookies })
   

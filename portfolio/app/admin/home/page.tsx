@@ -2,6 +2,8 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { HomeForm } from "@/components/admin/home/home-form"
 
+export const runtime = 'edge'
+
 export default async function AdminHomePage() {
   const supabase = createServerComponentClient({ cookies })
   

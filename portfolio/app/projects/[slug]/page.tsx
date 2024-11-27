@@ -12,6 +12,8 @@ interface Props {
   }
 }
 
+export const runtime = 'edge'
+
 export default async function ProjectPage({ params }: Props) {
   try {
     const project = await getProject(params.slug)
